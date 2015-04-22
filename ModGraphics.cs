@@ -871,12 +871,6 @@ namespace FavoriteCims
 					FavCimsCitizenSingleRowPanel.MyInstanceID = FavCitizen.Key;
 					FavCimsCitizenSingleRowPanel.MyInstancedName = FavCitizen.Value;
 				}
-				/* qui posso caricare anche i distretti, gli edifici ecc....
-				else 
-				{
-					Debug.Log("#ID# : " + FavCitizen.Key + " #Name# : " + FavCitizen.Value + " #Type# : " + FavCitizen.Key.Type.ToString());
-				}
-				*/
 			}
 		}
 	}
