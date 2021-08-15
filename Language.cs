@@ -13,6 +13,8 @@ namespace FavoriteCims
 		public static string GameLanguage;
 		public static Dictionary<string, string> it = new Dictionary<string, string>();
 		public static Dictionary<string, string> en = new Dictionary<string, string> ();
+		public static Dictionary<string, string> nl = new Dictionary<string, string> ();
+		public static Dictionary<string, string> rus = new Dictionary<string, string> ();
 
 		public static string text (string index) {
 
@@ -134,13 +136,357 @@ namespace FavoriteCims
 						it ["District_Label"] = "Distretto: ";
 						it ["District_Label_tooltip"] = "Attualmente si trova in questo distretto";
 						it ["Citizen_Details_NoUnit"] = "Il cittadino e' morto o non ha una casa";
+						//v0.2.1
 						it ["Citizen_wait_hearse"] 	  = "Aspetta il carro funebre";
 						it ["Citizen_on_hearse"]	  = "Sul carro funebre";
 						it ["Citizen_hisfuneral"]	  = "Cerimonia funebre";
 						it ["Citizen_buried"]		  = "Sepolto";
-						//it["Family_no_pets"]					 = "Nessun animale domestico";
+						//v0.3
+						it ["Citizen_Tourist_tooltip"] = "Questo cittadino e' in visita nella nostra citta'";
+						it ["View_PassengersList"]	  = "Guarda lista passeggeri";
+						it ["View_NoPassengers"]	  = "Nessun passeggero";
+						it ["Vehicle_Passengers"]	  = "Passeggeri nel veicolo";
+						it ["Vehicle_DriverIconText"]	  = "Al volante";
+						it ["Vehicle_PasssengerIconText"] = "Passeggeri";
+						it ["Citizens_HouseHolds"]	= "Guarda Inquilini";
+						it ["Citizens_HouseHoldsTitle"]	= "Inquilini";
+						it ["CitizenOnBuilding"]	= "Lista Dipendenti e Visitatori";
+						it ["CitizenOnBuildingTitle"]	= "Dipendenti e Visitatori";
+						it ["OnBuilding_Residential"] = "Appartamento ";
+						it ["View_List"] = "Guarda ";
+						it ["OnBuilding_Guests"]  = "Visitatori";
+						it ["OnBuilding_Workers"]  = "Dipendenti al lavoro";
+						it ["WorkersOnBuilding"]   = "Lavoratori nell'edificio";
+						it ["OnBuilding_NoWorkers"]	= "Nessuno lavora oggi";
+						it ["OnBuilding_NoGuests"] = "Nessun visitatore";
+						it ["BuildingIsEmpty"] 	= "Nessuno vive o lavora in questo edificio";
+						it ["OnBuilding_TotalWorkers"] = "Totale :";
+						//v0.3b
+						it ["Buildings_Type_CommercialEco"] = "Edificio Commerciale Ecologico";
+						it ["Buildings_Type_CommercialLeisure"] = "Edificio Commerciale d'intrattenimento.";
+						it ["Buildings_Type_CommercialTourist"] = "Edificio Turistico o adibito al turismo.";
+						//v0.3.1
+						it ["Citizen_Arrested"] = "Questo cittadino e' in prigione!";
+						it ["Transported_to_Prison"] = "Scortato in Prigione!";
+						it ["Jailed_into"] = "Incarcerato presso ";
+						it ["Citizen_Under_Arrest"] = "Cittadini in arresto";
+						it ["OnBuilding_noArrested"] = "Nessun cittadino in arresto";
+						it ["OnPolice_Building_Service"] = "Secondini e Carcerati";
+						it ["OnEducation_Building_Service"] = "Insegnanti e Studenti";
+						it ["OnMedical_Building_Service"] = "Medici e Pazienti";
+						it ["Citizen_at_School"] = "Studenti a lezione";
+						it ["Citizen_on_Clinic"] = "Pazienti in cura";
 
 						return it [index];
+					
+					} else if (GameLanguage == "(DUTCH)") {
+						
+						nl = new Dictionary<string, string> ();
+
+						///////NON MODIFICABILE//////////////////////MODIFICABILE
+						nl ["FavCimsButton_tooltip"] = "Mijn favoriete cims";
+						nl ["FavCimsBCMenuButton_text"] = "Inwoners";
+						nl ["FavCimsBCMenuButton_tooltip"] = "Gevolgde personen";
+						nl ["FavCimsBBMenuButton_text"] = "Gebouwen";
+						nl ["FavCimsBBMenuButton_tooltip"] = "Favoriete gebouwen";
+						nl ["FavCimsBSMenuButton_text"] = "Stats";
+						nl ["FavCimsBSMenuButton_tooltip"] = "Info en stats";
+						nl ["FavStarButton_enable_tooltip"] = "Klik hier om aan favorieten toe te voegen!";
+						nl ["FavStarButton_disable_tooltip"] = "Klik hier om uit favoriete te verwijderen :(";
+						nl ["FavCimsHappinesColText_text"] = "Status";
+						nl ["FavCimsHappinesColText_tooltip"] = "Inwonergeluk";
+						nl ["FavCimsNameColText_text"] = "Inwonernaam";
+						nl ["FavCimsNameColText_tooltip"] = "Inwonernaam";
+						nl ["FavCimsEduColText_text"] = "Opleiding";
+						nl ["FavCimsEduColText_tooltip"] = "Opleidingsniveau van de inwoner";
+						nl ["FavCimsWorkingPlaceColText_text"] = "Beroep";
+						nl ["FavCimsWorkingPlaceColText_tooltip"] = "Plaats waar de inwoner werkt of onderwijs geniet";
+						nl ["FavCimsAgePhaseColText_text"] = "Levensfase";
+						nl ["FavCimsAgePhaseColText_tooltip"] = "Levensfase van de inwoner";
+						nl ["FavCimsAgeColText_text"] = "Leeftijd";
+						nl ["FavCimsAgeColText_tooltip"] = "Leeftijf van de inwoner";
+						nl ["FavCimsHomeColText_text"] = "Woning van inwoner";
+						nl ["FavCimsHomeColText_tooltip"] = "Inwoner woont in dit huis";
+						nl ["FavCimsLastActColText_text"] = "Laatste activiteit";
+						nl ["FavCimsLastActColText_tooltip"] = "Wat de inwoner op dit moment aan het doen is";
+						nl ["FavCimsCloseButtonCol_text"] = "Sluiten";
+						nl ["FavCimsCloseButtonCol_tooltip"] = "Klik op de knop \"Sluiten\" om de inwoner uit de favorieten te verwijderen :(";
+						nl ["Male"] = "Mannelijk";
+						nl ["Female"] = "Vrouwelijk";
+						nl ["AgePhase_Child_Male"] = "Jongetje";
+						nl ["AgePhase_Teen_Male"] = "Jongen";
+						nl ["AgePhase_Young_Male"] = "Jonge man";
+						nl ["AgePhase_Adult_Male"] = "Man";
+						nl ["AgePhase_Senior_Male"] = "Oude man";
+						nl ["Education_Uneducated_Male"] = "Ongeschoold";
+						nl ["Education_OneSchool_Male"] = "Laag geschoold";
+						nl ["Education_TwoSchools_Male"] = "Goed geschoold";
+						nl ["Education_ThreeSchools_Male"] = "Hoog opgeleid";
+						nl ["AgePhase_Child_Female"] = "Meisje";
+						nl ["AgePhase_Teen_Female"] = "Meid";
+						nl ["AgePhase_Young_Female"] = "Jonge vrouw";
+						nl ["AgePhase_Adult_Female"] = "Vrouw";
+						nl ["AgePhase_Senior_Female"] = "Oude vrouw";
+						nl ["Education_Uneducated_Female"] = "Ongeschoold";
+						nl ["Education_OneSchool_Female"] = "Laag geschoold";
+						nl ["Education_TwoSchools_Female"] = "Goed geschoold";
+						nl ["Education_ThreeSchools_Female"] = "Hoog opgeleid";
+						nl ["AgePhaseDead_Male"] = "Dood";
+						nl ["AgePhaseDead_Female"] = "Dood";
+						nl ["People_Life_Status_Alive"] = "Inwoner leeft";
+						nl ["People_Life_Status_Dead"] = "Inwoner is dood";
+						nl ["People_Life_Status_Dead_date"] = "op deze datum";
+						nl ["People_Life_Status_Dead_time"] = "om";
+						nl ["NotificationIconVeryUnhappy"] = "Zeer ongelukkig";
+						nl ["NotificationIconUnhappy"] = "Ongelukkig";
+						nl ["NotificationIconHappy"] = "Gelukkig";
+						nl ["NotificationIconVeryHappy"] = "Zeer gelukkig";
+						nl ["NotificationIconExtremelyHappy"] = "Buitengewoon gelukkig";
+						nl ["time_format"] = "mm-dd-yyyy";
+						nl ["People_Life_Status_IsGone"] = "Inwoner is momenteel niet in de stad";
+						nl ["Citizen_HomeLess"] = "Dakloos";
+						nl ["Citizen_HomeLess_tooltip"] = "Inwoner heeft geen woning";
+						nl ["HomeOutsideTheCity"] = "Erg ver weg";
+						nl ["Home_Location_Dead"] = "Op de begraafplaats";
+						nl ["Citizen_Retired"] = "Gepensioneerd";
+						nl ["Citizen_Retired_tooltip"] = "Inwoner is met pensioen";
+						nl ["Unemployed_tooltip"] = "Inwoner heeft momenteel veel vrije tijd...";
+						nl ["Government_job"] = "Overheidsgebouw";
+						nl ["Electricity_job"] = "Electriciteitscentrale";
+						nl ["Water_job"] = "Waterbedrijf";
+						nl ["Generic_job_place"] = "Inwoner werkt in dit gebouw";
+						nl ["Vehicle_on_foot"] = "Inwoner is te voet";
+						nl ["Citizen_Details"] = "Inwonerdetails";
+						nl ["Citizen_Details_fullTemplate"] = "Teveel gezinvensters geopend, sluit er alvorens andere te openen";
+						nl ["Status_static_label"] = "Status: ";
+						nl ["Citizen_Family_unit"] = "Gezin";
+						nl ["NowInThisDistrict"] = "Is op dit moment in de wijk: ";
+						nl ["DistrictLabel"] = "Wijk: ";
+						nl ["DistrictNameNoDistrict"] = "Geen";
+						nl ["Citizen_Details_No_Partner"] = "Geen partner";
+						nl ["Citizen_Details_No_Childs"] = "Geen kinderen";
+						nl ["Right_click_to_swith_tooltip"] = "Rechtermuisknop om van inwoner te wisselen";
+						nl ["Home_Bubble_panel_Label"] = "Woning: ";
+						nl ["Low_Wealth_Male"] = "Arm";
+						nl ["Mid_Wealth_Male"] = "Modaal";
+						nl ["High_Wealth_Male"] = "Rijk";
+						nl ["Low_Wealth_Female"] = "Arm";
+						nl ["Mid_Wealth_Female"] = "Modaal";
+						nl ["High_Wealth_Female"] = "Rijk";
+						nl ["WellBeingLabel"] = "Welzijn: ";
+						nl ["HappinessLabel"] = "Geluk: ";
+						nl ["Wealth_Label"] = "Rijkdom";
+						nl ["Health_Level_VerySick_Male"] = "Zeer ziek";
+						nl ["Health_Level_Sick_Male"] = "Ziek";
+						nl ["Health_Level_PoorHealth_Male"] = "Zwakke gezondheid";
+						nl ["Health_Level_Healthy_Male"] = "Normale gezondheid";
+						nl ["Health_Level_VeryHealthy_Male"] = "Goede gezondheid";
+						nl ["Health_Level_ExcellentHealth_Male"] = "Uitmuntende gezondheid";
+						nl ["Health_Level_VerySick_Female"] = "Zeer ziek";
+						nl ["Health_Level_Sick_Female"] = "Ziek";
+						nl ["Health_Level_PoorHealth_Female"] = "Zwakke gezondheid";
+						nl ["Health_Level_Healthy_Female"] = "Normale gezondheid";
+						nl ["Health_Level_VeryHealthy_Female"] = "Goede gezondheid";
+						nl ["Health_Level_ExcellentHealth_Female"] = "Uitmuntende gezondheid";
+						nl ["District_Label"] = "Wijk: ";
+						nl ["District_Label_tooltip"] = "Momenteel in de wijk";
+						nl ["Citizen_Details_NoUnit"] = "Inwoner is dood of dakloos";
+						//v0.2.1
+						nl ["Citizen_wait_hearse"] = "Wacht op een lijkwagen";
+						nl ["Citizen_on_hearse"] = "In lijkwagen";
+						nl ["Citizen_hisfuneral"] = "Begravenisceremonie";
+						nl ["Citizen_buried"] = "Onder de groene zoden";
+						//v0.3 MANCANTE !!
+						nl ["Citizen_Tourist_tooltip"] = "This citizen is visiting our City"; //locstatus
+						nl ["View_PassengersList"]	   = "View passengers list";
+						nl ["View_NoPassengers"]	   = "No passengers";
+						nl ["Vehicle_Passengers"]	   = "Passengers on board";
+						nl ["Vehicle_DriverIconText"]	  = "Vehicle Driver";
+						nl ["Vehicle_PasssengerIconText"] = "Passengers";
+						nl ["Citizens_HouseHolds"]	= "View Residents";
+						nl ["Citizens_HouseHoldsTitle"]	= "Residents";
+						nl ["CitizenOnBuilding"]	= "Employees and Guests List";
+						nl ["CitizenOnBuildingTitle"]	= "Employees and Guests";
+						nl ["OnBuilding_Residential"] = "Apartment ";
+						nl ["View_List"] = "View ";
+						nl ["OnBuilding_Guests"]  = "Guests";
+						nl ["OnBuilding_Workers"]  = "Employees at work";
+						nl ["WorkersOnBuilding"]   = "List of employees at work";
+						nl ["OnBuilding_NoWorkers"]	= "Nobody at work now";
+						nl ["OnBuilding_NoGuests"] = "No guests inside";
+						nl ["BuildingIsEmpty"] 	= "Nobody works or lives here";
+						nl ["OnBuilding_TotalWorkers"] = "Total :";
+						//v0.3b MANCANTE !!
+						nl ["Buildings_Type_CommercialEco"] = "Ecologic Commercial Building";
+						nl ["Buildings_Type_CommercialLeisure"] = "Leisure Commercial Building";
+						nl ["Buildings_Type_CommercialTourist"] = "Tourism Commercial Building";
+						//v0.3.1 MANCANTE !!
+						nl ["Citizen_Arrested"] = "This Citizen is in Jail!";
+						nl ["Transported_to_Prison"] = "Transported to Prison";
+						nl ["Jailed_into"] = "Jailed into ";
+						nl ["Citizen_Under_Arrest"] = "Citizens under arrest";
+						nl ["OnBuilding_noArrested"] = "Nobody jailed here";
+						nl ["OnPolice_Building_Service"] = "Guards and Prisoners";
+						nl ["OnEducation_Building_Service"] = "Teachers and Students";
+						nl ["OnMedical_Building_Service"] = "Doctors and Patients";
+						nl ["Citizen_at_School"] = "Students at school";
+						nl ["Citizen_on_Clinic"] = "Patients being treated";
+
+						return nl [index];
+
+					} else if (GameLanguage == "(RUSSIAN)") {
+
+						rus = new Dictionary<string, string> ();
+
+						///////NON MODIFICABILE//////////////////////MODIFICABILE
+						rus ["FavCimsButton_tooltip"] = "My Favorite Cims";
+						rus ["FavCimsBCMenuButton_text"] = "Жители";
+						rus ["FavCimsBCMenuButton_tooltip"] = "Люди";
+						rus ["FavCimsBBMenuButton_text"] = "Здания";
+						rus ["FavCimsBBMenuButton_tooltip"] = "Избранные здания";
+						rus ["FavCimsBSMenuButton_text"] = "Показатели";
+						rus ["FavCimsBSMenuButton_tooltip"] = "Инфо и показатели";
+						rus ["FavStarButton_enable_tooltip"] = "Кликни, чтобы добавить в Избранные!";
+						rus ["FavStarButton_disable_tooltip"] = "Кликни, чтобы удалить из Избранных :(";
+						rus ["FavCimsHappinesColText_text"] = "Статус";
+						rus ["FavCimsHappinesColText_tooltip"] = "Статус счастья";
+						rus ["FavCimsNameColText_text"] = "Имя жителя";
+						rus ["FavCimsNameColText_tooltip"] = "Имя жителя";
+						rus ["FavCimsEduColText_text"] = "Образование";
+						rus ["FavCimsEduColText_tooltip"] = "Уровень образования";
+						rus ["FavCimsWorkingPlaceColText_text"] = "Место учебы/работы";
+						rus ["FavCimsWorkingPlaceColText_tooltip"] = "Место где учится/работает житель";
+						rus ["FavCimsAgePhaseColText_text"] = "Возрастная категория";
+						rus ["FavCimsAgePhaseColText_tooltip"] = "Категория возраста жителя";
+						rus ["FavCimsAgeColText_text"] = "Возраст";
+						rus ["FavCimsAgeColText_tooltip"] = "Возраст жителя";
+						rus ["FavCimsHomeColText_text"] = "Место жительства";
+						rus ["FavCimsHomeColText_tooltip"] = "Горожанин живет здесь";
+						rus ["FavCimsLastActColText_text"] = "Последняя активность";
+						rus ["FavCimsLastActColText_tooltip"] = "Чем житель занят в данный момент";
+						rus ["FavCimsCloseButtonCol_text"] = "Закрыть";
+						rus ["FavCimsCloseButtonCol_tooltip"] = "Нажми Закрыть, чтобы убрать жителя из Избранных :(";
+						rus ["Male"] = "Мужчина";
+						rus ["Female"] = "Женщина";
+						rus ["AgePhase_Child_Male"] = "Ребенок";
+						rus ["AgePhase_Teen_Male"] = "Подросток";
+						rus ["AgePhase_Young_Male"] = "Молодой";
+						rus ["AgePhase_Adult_Male"] = "Взрослый";
+						rus ["AgePhase_Senior_Male"] = "Старый";
+						rus ["Education_Uneducated_Male"] = "Необразован";
+						rus ["Education_OneSchool_Male"] = "Начальная школа";
+						rus ["Education_TwoSchools_Male"] = "Средняя школа";
+						rus ["Education_ThreeSchools_Male"] = "Университет";
+						rus ["AgePhase_Child_Female"] = "Ребенок";
+						rus ["AgePhase_Teen_Female"] = "Подросток";
+						rus ["AgePhase_Young_Female"] = "Молодая";
+						rus ["AgePhase_Adult_Female"] = "Взрослая";
+						rus ["AgePhase_Senior_Female"] = "Старая";
+						rus ["Education_Uneducated_Female"] = "Необразована";
+						rus ["Education_OneSchool_Female"] = "Начальная школа";
+						rus ["Education_TwoSchools_Female"] = "Средняя школа";
+						rus ["Education_ThreeSchools_Female"] = "Университет";
+						rus ["AgePhaseDead_Male"] = "Умер";
+						rus ["AgePhaseDead_Female"] = "Умерла";
+						rus ["People_Life_Status_Alive"] = "Горожанин жив";
+						rus ["People_Life_Status_Dead"] = "Горожанин умер";
+						rus ["People_Life_Status_Dead_date"] = "в этот день";
+						rus ["People_Life_Status_Dead_time"] = "в это время";
+						rus ["NotificationIconVeryUnhappy"] = "Горемыка";
+						rus ["NotificationIconUnhappy"] = "Грустный(ая)";
+						rus ["NotificationIconHappy"] = "Радостный(ая)";
+						rus ["NotificationIconVeryHappy"] = "Счастливец(а)";
+						rus ["NotificationIconExtremelyHappy"] = "На седьмом небе";
+						rus ["time_format"] = "мм-дд-гггг";
+						rus ["People_Life_Status_IsGone"] = "Житель уехал из города";
+						rus ["Citizen_HomeLess"] = "Бомж";
+						rus ["Citizen_HomeLess_tooltip"] = "У жителя нет дома";
+						rus ["HomeOutsideTheCity"] = "Далеко-далеко";
+						rus ["Home_Location_Dead"] = "На кладбище";
+						rus ["Citizen_Retired"] = "Не работает";
+						rus ["Citizen_Retired_tooltip"] = "Житель больше не работает";
+						rus ["Unemployed_tooltip"] = "У жителя полно свободного времени...";
+						rus ["Government_job"] = "Административное Здание";
+						rus ["Electricity_job"] = "Электростанция";
+						rus ["Water_job"] = "Гидростанция";
+						rus ["Generic_job_place"] = "Житель работает здесь";
+						rus ["Vehicle_on_foot"] = "Житель идет пешком";
+						rus ["Citizen_Details"] = "Подробности";
+						rus ["Citizen_Details_fullTemplate"] = "Открыто слишком много Панелей Семей";
+						rus ["Status_static_label"] = "Статус : ";
+						rus ["Citizen_Family_unit"] = "Семья";
+						rus ["NowInThisDistrict"] = "Находится в районе: ";
+						rus ["DistrictLabel"] = "Район: ";
+						rus ["DistrictNameNoDistrict"] = "Отсутсвует";
+						rus ["Citizen_Details_No_Partner"] = "Одинок(а)";
+						rus ["Citizen_Details_No_Childs"] = "Детей нет";
+						rus ["Right_click_to_swith_tooltip"] = "Правая кнопка - сменить жителя";
+						rus ["Home_Bubble_panel_Label"] = "Дом : ";
+						rus ["Low_Wealth_Male"] = "Бедный";
+						rus ["Mid_Wealth_Male"] = "Обеспеченный";
+						rus ["High_Wealth_Male"] = "Богатый";
+						rus ["Low_Wealth_Female"] = "Бедная";
+						rus ["Mid_Wealth_Female"] = "Обеспеченная";
+						rus ["High_Wealth_Female"] = "Богатая";
+						rus ["WellBeingLabel"] = "Благополучие: ";
+						rus ["HappinessLabel"] = "Счастье : ";
+						rus ["Wealth_Label"] = "Благосостояние";
+						rus ["Health_Level_VerySick_Male"] = "Тяжело болен";
+						rus ["Health_Level_Sick_Male"] = "Болен";
+						rus ["Health_Level_PoorHealth_Male"] = "Хворает";
+						rus ["Health_Level_Healthy_Male"] = "В норме";
+						rus ["Health_Level_VeryHealthy_Male"] = "Здоров";
+						rus ["Health_Level_ExcellentHealth_Male"] = "До безобразия здоров";
+						rus ["Health_Level_VerySick_Female"] = "Тяжело больна";
+						rus ["Health_Level_Sick_Female"] = "Больна";
+						rus ["Health_Level_PoorHealth_Female"] = "Хворает";
+						rus ["Health_Level_Healthy_Female"] = "В норме";
+						rus ["Health_Level_VeryHealthy_Female"] = "Здорова";
+						rus ["Health_Level_ExcellentHealth_Female"] = "До неприличия здорова";
+						rus ["District_Label"] = "Район: ";
+						rus ["District_Label_tooltip"] = "Сейчас в этом районе";
+						rus ["Citizen_Details_NoUnit"] = "Житель умер или бомж";
+						rus ["Citizen_wait_hearse"] = "Ждет катафалк";
+						rus ["Citizen_on_hearse"] = "В катафалке";
+						rus ["Citizen_hisfuneral"]	= "Похороны";
+						rus ["Citizen_buried"] = "Погребен(а)";
+						//v0.3
+						rus ["Citizen_Tourist_tooltip"] = "Этот турист посещает ваш город"; 
+						rus ["View_PassengersList"] = "Просмотр пассажиров";
+						rus ["View_NoPassengers"] = "Пассажиров нет";
+						rus ["Vehicle_Passengers"] = "Пассажиры в салоне";
+						rus ["Vehicle_DriverIconText"]	= "Водитель";
+						rus ["Vehicle_PasssengerIconText"] = "Пассажиры";
+						rus ["Citizens_HouseHolds"] = "Просмотр жильцов";
+						rus ["Citizens_HouseHoldsTitle"] = "Жильцы";
+						rus ["CitizenOnBuilding"]	= "Список кадров и гостей";
+						rus ["CitizenOnBuildingTitle"]	= "Сотрудники и Гости"; 
+						rus ["OnBuilding_Residential"] = "Квартира ";
+						rus ["View_List"] = "Просмотр ";
+						rus ["OnBuilding_Guests"] = "Посетители";
+						rus ["OnBuilding_Workers"] = "Сотрудники";
+						rus ["WorkersOnBuilding"] = "Список сотрудников"; 
+						rus ["OnBuilding_NoWorkers"] = "На работе никого";
+						rus ["OnBuilding_NoGuests"] = "Посетителей нет";
+						rus ["BuildingIsEmpty"] = "Жителей/работников нет";
+						rus ["OnBuilding_TotalWorkers"] = "Всего :";
+						//v0.3b
+						rus ["Buildings_Type_CommercialEco"] = "Коммер. здание (Экология)"; 
+						rus ["Buildings_Type_CommercialLeisure"] = "Коммер. здание (Досуг и отдых)";
+						rus ["Buildings_Type_CommercialTourist"] = "Коммер. здание (Туризм)";
+						//v0.3.1 MANCANTE !!
+						rus ["Citizen_Arrested"] = "This Citizen is in Jail!";
+						rus ["Transported_to_Prison"] = "Transported to Prison";
+						rus ["Jailed_into"] = "Jailed into ";
+						rus ["Citizen_Under_Arrest"] = "Citizens under arrest";
+						rus ["OnBuilding_noArrested"] = "Nobody jailed here";
+						rus ["OnPolice_Building_Service"] = "Guards and Prisoners";
+						rus ["OnEducation_Building_Service"] = "Teachers and Students";
+						rus ["OnMedical_Building_Service"] = "Doctors and Patients";
+						rus ["Citizen_at_School"] = "Students at school";
+						rus ["Citizen_on_Clinic"] = "Patients being treated";
+
+						return rus [index];
 
 					} else {
 
@@ -254,18 +600,53 @@ namespace FavoriteCims
 						en ["District_Label"] = "District: ";
 						en ["District_Label_tooltip"] = "In this District at the moment";
 						en ["Citizen_Details_NoUnit"] = "Citizen is dead or homeless";
+						//v0.2.1
 						en ["Citizen_wait_hearse"] 	  = "Waiting for funeral car";
 						en ["Citizen_on_hearse"]	  = "On funeral car";
 						en ["Citizen_hisfuneral"]	  = "Funeral ceremony";
 						en ["Citizen_buried"]		  = "Six Feet Under";
-						//en["Family_no_pets"] = "No pets";
+						//v0.3
+						en ["Citizen_Tourist_tooltip"] = "This citizen is visiting our City"; //locstatus
+						en ["View_PassengersList"]	   = "View passengers list";
+						en ["View_NoPassengers"]	   = "No passengers";
+						en ["Vehicle_Passengers"]	   = "Passengers on board";
+						en ["Vehicle_DriverIconText"]	  = "Vehicle Driver";
+						en ["Vehicle_PasssengerIconText"] = "Passengers";
+						en ["Citizens_HouseHolds"]	= "View Residents";
+						en ["Citizens_HouseHoldsTitle"]	= "Residents";
+						en ["CitizenOnBuilding"]	= "Employees and Guests List";
+						en ["CitizenOnBuildingTitle"]	= "Employees and Guests";
+						en ["OnBuilding_Residential"] = "Apartment ";
+						en ["View_List"] = "View ";
+						en ["OnBuilding_Guests"]  = "Guests";
+						en ["OnBuilding_Workers"]  = "Employees at work";
+						en ["WorkersOnBuilding"]   = "List of employees at work";
+						en ["OnBuilding_NoWorkers"]	= "Nobody at work";
+						en ["OnBuilding_NoGuests"] = "No guests inside";
+						en ["BuildingIsEmpty"] 	= "Nobody works or lives here";
+						en ["OnBuilding_TotalWorkers"] = "Tot :";
+						//v0.3b
+						en ["Buildings_Type_CommercialEco"] = "Ecologic Commercial Building";
+						en ["Buildings_Type_CommercialLeisure"] = "Leisure Commercial Building";
+						en ["Buildings_Type_CommercialTourist"] = "Tourism Commercial Building";
+						//v0.3.1
+						en ["Citizen_Arrested"] = "This Citizen is in Jail!";
+						en ["Transported_to_Prison"] = "Transported to Prison";
+						en ["Jailed_into"] = "Jailed into ";
+						en ["Citizen_Under_Arrest"] = "Citizens under arrest";
+						en ["OnBuilding_noArrested"] = "Nobody jailed here";
+						en ["OnPolice_Building_Service"] = "Guards and Prisoners";
+						en ["OnEducation_Building_Service"] = "Teachers and Students";
+						en ["OnMedical_Building_Service"] = "Doctors and Patients";
+						en ["Citizen_at_School"] = "Students at school";
+						en ["Citizen_on_Clinic"] = "Patients being treated";
 
 						return en [index];
 
 					}
-				} catch (Exception e) {
-					Debug.Error (" Language File Error " + e.ToString ());
-					return "Error";
+				} catch /*(Exception e)*/ {
+					//Debug.Error (" Language File Error " + e.ToString ());
+					return "language Error";
 				}
 			
 			} else {
@@ -274,6 +655,15 @@ namespace FavoriteCims
 					return it [index];
 				}
 
+
+				if (GameLanguage == "(DUTCH)") {
+					return nl [index];
+				}
+
+				if (GameLanguage == "(RUSSIAN)") {
+					return rus [index];
+				}
+					
 				return en [index];
 			}
 		}

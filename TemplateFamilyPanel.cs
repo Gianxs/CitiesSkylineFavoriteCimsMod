@@ -6,6 +6,7 @@ using System;
 //using System.IO;
 using ColossalFramework;
 using ColossalFramework.Globalization;
+using ColossalFramework.Math;
 using ColossalFramework.UI;
 using UnityEngine;
 
@@ -80,6 +81,8 @@ namespace FavoriteCims
 		BuildingInfo HomeInfo;
 		BuildingInfo WorkInfo;
 		ushort MainCitizenInstance;
+		ushort policeveh;
+        bool isStudent;
 		
 		ushort Pet;
 		CitizenInstance PetInstance;
@@ -315,16 +318,16 @@ namespace FavoriteCims
 
 		///////////////End Bubble///////////////
 		
-		public void GoToCitizen(InstanceID Target)
+		public void GoToCitizen(InstanceID Target, UIMouseEventParameter eventParam)
 		{
 			if (Target.IsEmpty)
 				return;
 			
 			try {
 				if (MyInstance.SelectInstance (Target)) {
-					if (Input.GetMouseButton (2)) {
+					if (eventParam.buttons == UIMouseButton.Middle) {//Input.GetMouseButton (2)) {
 						WorldInfoPanel.Show<CitizenWorldInfoPanel> (this.position, Target);
-					} else if (Input.GetMouseButton (1)) {
+					} else if (eventParam.buttons == UIMouseButton.Right) {//Input.GetMouseButton (1)) {
 						//Switch Citizen
 						this.MyInstanceID = Target;
 						this.execute = true;
@@ -340,17 +343,17 @@ namespace FavoriteCims
 			}
 		}
 		
-		public void GoToInstance(InstanceID Target) {
+		public void GoToInstance(InstanceID Target, UIMouseEventParameter eventParam) {
 			
 			if (Target.IsEmpty)
 				return;
 			
 			try {
 				if (MyInstance.SelectInstance (Target)) {
-					if (Input.GetMouseButton (1)) {
+					if (eventParam.buttons == UIMouseButton.Middle) {
 						//ToolsModifierControl.cameraController.SetTarget(Target, ToolsModifierControl.cameraController.transform.position, false);
 						DefaultTool.OpenWorldInfoPanel(Target, ToolsModifierControl.cameraController.transform.position);
-					} else if (Input.GetMouseButton (0)) {
+					} else {
 						ToolsModifierControl.cameraController.SetTarget(Target, ToolsModifierControl.cameraController.transform.position, true);
 						DefaultTool.OpenWorldInfoPanel(Target, ToolsModifierControl.cameraController.transform.position);
 					}
@@ -385,7 +388,7 @@ namespace FavoriteCims
 						//this.CarOwner = m_citizen;
 						sPrite.texture = TextureDB.BubbleCar;
 						sPrite.playAudioEvents = true;
-						sPrite.tooltip = this.MyVehicle.GetVehicleName (FamVehicle) + " " + Locale.Get("VEHICLE_OWNER") + " - " + this.MyCitizen.GetCitizenName (m_citizen);
+						sPrite.tooltip = this.MyVehicle.GetVehicleName (FamVehicle) + " - " + Locale.Get("VEHICLE_OWNER") + " " + this.MyCitizen.GetCitizenName (m_citizen);
 					}
 				} else if (FamVehicleParked != 0) {
 					MyCitVeh.ParkedVehicle = FamVehicleParked;
@@ -441,68 +444,142 @@ namespace FavoriteCims
 					string CitizenVehicleName = this.MyVehicle.GetVehicleName (veh);
 					
 					if (VehInfo.m_class.m_service == ItemClass.Service.Residential) {
-						if (VehInfo.m_vehicleAI.GetOwnerID (veh, ref MyVehicle.m_vehicles.m_buffer [veh]).Citizen == m_citizen) {
-							
+						//if (VehInfo.m_vehicleAI.GetOwnerID (veh, ref MyVehicle.m_vehicles.m_buffer [veh]).Citizen == m_citizen) {
+						if (CitizenVehicleName.Like ("Bicycle")) {
+							//sta usando una bicicletta
+							ButtVehicle.normalBgSprite = "IconTouristBicycleVehicle";
+							ButtVehicle.hoveredBgSprite = "IconTouristBicycleVehicle";
+							ButtVehicle.tooltip = CitizenVehicleName + " - " + Locale.Get ("PROPS_DESC", "bicycle01");
+						} else {
 							ButtVehicle.normalBgSprite = "IconCitizenVehicle";
 							ButtVehicle.hoveredBgSprite = "IconTouristVehicle";
 							ButtVehicle.tooltip = CitizenVehicleName;
 						}
+
+						//}
 					} else if (VehInfo.m_class.m_service == ItemClass.Service.PublicTransport) {
 						
 						switch (VehInfo.m_class.m_subService)
 						{
+
+						case ItemClass.SubService.PublicTransportCableCar:
+
+							ButtVehicle.normalBgSprite = "SubBarPublicTransportCableCar";
+							ButtVehicle.hoveredBgSprite = "SubBarPublicTransportCableCarHovered";
+							ButtVehicle.focusedBgSprite = "SubBarPublicTransportCableCarFocused";
+							ButtVehicle.pressedBgSprite = "SubBarPublicTransportCableCarPressed";
+							ButtVehicle.tooltip = Locale.Get ("VEHICLE_TITLE", "Cable Car") + " - " + Locale.Get ("SUBSERVICE_DESC", "CableCar");
+
+							break;
+
+						case ItemClass.SubService.PublicTransportMonorail:
+
+							ButtVehicle.normalBgSprite = "SubBarPublicTransportMonorail";
+							ButtVehicle.hoveredBgSprite = "SubBarPublicTransportMonorailHovered";
+							ButtVehicle.focusedBgSprite = "SubBarPublicTransportMonorailFocused";
+							ButtVehicle.pressedBgSprite = "SubBarPublicTransportMonorailPressed";
+							ButtVehicle.tooltip = Locale.Get ("VEHICLE_TITLE", "Monorail Front") + " - " + Locale.Get ("SUBSERVICE_DESC", "Monorail");
+
+							break;
+
+						case ItemClass.SubService.PublicTransportTaxi:
+
+							ButtVehicle.normalBgSprite = "SubBarPublicTransportTaxi";
+							ButtVehicle.hoveredBgSprite = "SubBarPublicTransportTaxiHovered";
+							ButtVehicle.focusedBgSprite = "SubBarPublicTransportTaxiFocused";
+							ButtVehicle.pressedBgSprite = "SubBarPublicTransportTaxiPressed";
+							ButtVehicle.tooltip = Locale.Get ("VEHICLE_TITLE", "Taxi") + " - " + Locale.Get ("SUBSERVICE_DESC", "Taxi");
+
+							break;
+
+						case ItemClass.SubService.PublicTransportTram:
+
+							ButtVehicle.normalBgSprite = "SubBarPublicTransportTram";
+							ButtVehicle.hoveredBgSprite = "SubBarPublicTransportTramHovered";
+							ButtVehicle.focusedBgSprite = "SubBarPublicTransportTramFocused";
+							ButtVehicle.pressedBgSprite = "SubBarPublicTransportTramPressed";
+							ButtVehicle.tooltip = Locale.Get ("VEHICLE_TITLE", "Tram") + " - " + Locale.Get ("SUBSERVICE_DESC", "Tram");
+
+							break;
+
+
 						case ItemClass.SubService.PublicTransportBus:
 							
-							this.FavCimsLastActivityVehicleButton.normalBgSprite = "SubBarPublicTransportBus";
-							this.FavCimsLastActivityVehicleButton.hoveredBgSprite = "SubBarPublicTransportBusHovered";
-							this.FavCimsLastActivityVehicleButton.focusedBgSprite = "SubBarPublicTransportBusFocused";
-							this.FavCimsLastActivityVehicleButton.pressedBgSprite = "SubBarPublicTransportBusPressed";
-							this.FavCimsLastActivityVehicleButton.tooltip = CitizenVehicleName + " - " + Locale.Get ("SUBSERVICE_DESC", "Bus");
+							ButtVehicle.normalBgSprite = "SubBarPublicTransportBus";
+							ButtVehicle.hoveredBgSprite = "SubBarPublicTransportBusHovered";
+							ButtVehicle.focusedBgSprite = "SubBarPublicTransportBusFocused";
+							ButtVehicle.pressedBgSprite = "SubBarPublicTransportBusPressed";
+							ButtVehicle.tooltip = Locale.Get ("VEHICLE_TITLE", "Bus") + " - " + Locale.Get ("SUBSERVICE_DESC", "Bus");
 							
 							break;
 							
 						case ItemClass.SubService.PublicTransportMetro:
 							
-							this.FavCimsLastActivityVehicleButton.normalBgSprite = "SubBarPublicTransportMetro";
-							this.FavCimsLastActivityVehicleButton.hoveredBgSprite = "SubBarPublicTransportMetroHovered";
-							this.FavCimsLastActivityVehicleButton.focusedBgSprite = "SubBarPublicTransportMetroFocused";
-							this.FavCimsLastActivityVehicleButton.pressedBgSprite = "SubBarPublicTransportMetroPressed";
+							ButtVehicle.normalBgSprite = "SubBarPublicTransportMetro";
+							ButtVehicle.hoveredBgSprite = "SubBarPublicTransportMetroHovered";
+							ButtVehicle.focusedBgSprite = "SubBarPublicTransportMetroFocused";
+							ButtVehicle.pressedBgSprite = "SubBarPublicTransportMetroPressed";
 							
-							this.FavCimsLastActivityVehicleButton.tooltip = CitizenVehicleName + " - " + Locale.Get ("SUBSERVICE_DESC", "Metro");
+							ButtVehicle.tooltip = Locale.Get ("VEHICLE_TITLE", "Metro") + " - " + Locale.Get ("SUBSERVICE_DESC", "Metro");
 							
 							break;
 							
 						case ItemClass.SubService.PublicTransportPlane:
-							
-							this.FavCimsLastActivityVehicleButton.normalBgSprite = "SubBarPublicTransportPlane";
-							this.FavCimsLastActivityVehicleButton.hoveredBgSprite = "SubBarPublicTransportPlaneHovered";
-							this.FavCimsLastActivityVehicleButton.focusedBgSprite = "SubBarPublicTransportPlaneFocused";
-							this.FavCimsLastActivityVehicleButton.pressedBgSprite = "SubBarPublicTransportPlanePressed";
-							
-							this.FavCimsLastActivityVehicleButton.tooltip = CitizenVehicleName + " - " + Locale.Get ("SUBSERVICE_DESC", "Plane");
+
+							if(CitizenVehicleName.Like("Blimp")) {
+
+								ButtVehicle.normalBgSprite = "IconPolicyEducationalBlimps";
+								ButtVehicle.hoveredBgSprite = "IconPolicyEducationalBlimpsHovered";
+								ButtVehicle.focusedBgSprite = "IconPolicyEducationalBlimpsFocused";
+								ButtVehicle.pressedBgSprite = "IconPolicyEducationalBlimpsPressed";
+
+								ButtVehicle.tooltip = Locale.Get ("VEHICLE_TITLE", "Blimp") + " - " + Locale.Get ("FEATURES_DESC", "Blimp");
+
+							} else {
+
+								ButtVehicle.normalBgSprite = "SubBarPublicTransportPlane";
+								ButtVehicle.hoveredBgSprite = "SubBarPublicTransportPlaneHovered";
+								ButtVehicle.focusedBgSprite = "SubBarPublicTransportPlaneFocused";
+								ButtVehicle.pressedBgSprite = "SubBarPublicTransportPlanePressed";
+
+								ButtVehicle.tooltip = Locale.Get ("VEHICLE_TITLE", "Aircraft Passenger") + " - " + Locale.Get ("SUBSERVICE_DESC", "Plane");
+							}
 							
 							break;
 						case ItemClass.SubService.PublicTransportShip:
-							
-							this.FavCimsLastActivityVehicleButton.normalBgSprite = "SubBarPublicTransportShip";
-							this.FavCimsLastActivityVehicleButton.hoveredBgSprite = "SubBarPublicTransportShipHovered";
-							this.FavCimsLastActivityVehicleButton.focusedBgSprite = "SubBarPublicTransportShipFocused";
-							this.FavCimsLastActivityVehicleButton.pressedBgSprite = "SubBarPublicTransportShipPressed";
-							
-							this.FavCimsLastActivityVehicleButton.tooltip = CitizenVehicleName + " - " + Locale.Get ("SUBSERVICE_DESC", "Ship");
-							
+
+							if (CitizenVehicleName.Like ("Ferry")) {
+
+								ButtVehicle.normalBgSprite = "SubBarPublicTransportShip";
+								ButtVehicle.hoveredBgSprite = "SubBarPublicTransportShipHovered";
+								ButtVehicle.focusedBgSprite = "SubBarPublicTransportShipFocused";
+								ButtVehicle.pressedBgSprite = "SubBarPublicTransportShipPressed";
+								
+								ButtVehicle.tooltip = Locale.Get ("VEHICLE_TITLE", "Ferry") + " - " + Locale.Get ("FEATURES_DESC", "Ferry");
+
+							} else {
+
+								ButtVehicle.normalBgSprite = "SubBarPublicTransportShip";
+								ButtVehicle.hoveredBgSprite = "SubBarPublicTransportShipHovered";
+								ButtVehicle.focusedBgSprite = "SubBarPublicTransportShipFocused";
+								ButtVehicle.pressedBgSprite = "SubBarPublicTransportShipPressed";
+
+								ButtVehicle.tooltip = Locale.Get ("VEHICLE_TITLE", "Ship Passenger") + " - " + Locale.Get ("SUBSERVICE_DESC", "Ship");
+
+							}
+								
 							break;
 						case ItemClass.SubService.PublicTransportTrain:
 							
-							this.FavCimsLastActivityVehicleButton.normalBgSprite = "SubBarPublicTransportTrain";
-							this.FavCimsLastActivityVehicleButton.hoveredBgSprite = "SubBarPublicTransportTrainHovered";
-							this.FavCimsLastActivityVehicleButton.focusedBgSprite = "SubBarPublicTransportTrainFocused";
-							this.FavCimsLastActivityVehicleButton.pressedBgSprite = "SubBarPublicTransportTrainPressed";
+							ButtVehicle.normalBgSprite = "SubBarPublicTransportTrain";
+							ButtVehicle.hoveredBgSprite = "SubBarPublicTransportTrainHovered";
+							ButtVehicle.focusedBgSprite = "SubBarPublicTransportTrainFocused";
+							ButtVehicle.pressedBgSprite = "SubBarPublicTransportTrainPressed";
 							
 							if (CitizenVehicleName == "VEHICLE_TITLE[Train Passenger]:0")
 								CitizenVehicleName = Locale.Get ("VEHICLE_TITLE", "Train Engine");
 							
-							this.FavCimsLastActivityVehicleButton.tooltip = CitizenVehicleName + " - " + Locale.Get ("SUBSERVICE_DESC", "Train");
+							ButtVehicle.tooltip = Locale.Get ("VEHICLE_TITLE", "Train Engine") + " - " + Locale.Get ("SUBSERVICE_DESC", "Train");
 							
 							break;
 						}					
@@ -522,6 +599,7 @@ namespace FavoriteCims
 			CitizenInstanceID.Citizen = m_citizen;
 			
 			CitizenInfo citizenInfo = this.MyCitizen.m_citizens.m_buffer [m_citizen].GetCitizenInfo (m_citizen);
+
 			string CitizenStatus = citizenInfo.m_citizenAI.GetLocalizedStatus (m_citizen, ref this.MyCitizen.m_citizens.m_buffer [m_citizen], out MyTargetID);
 			
 			string CitizenTarget = this.MyBuilding.GetBuildingName (MyTargetID.Building, CitizenInstanceID);
@@ -538,8 +616,30 @@ namespace FavoriteCims
 					ButtDestination.tooltip = FavCimsLang.text ("DistrictLabel") + MyDistrict.GetDistrictName (TargetDistrict);
 				}
 			}
-			
-			
+
+			if (this.MyCitizen.m_citizens.m_buffer [(int)(IntPtr)m_citizen].Arrested && this.MyCitizen.m_citizens.m_buffer [(int)(IntPtr)m_citizen].Criminal) {
+				if (this.MyCitizen.m_citizens.m_buffer [m_citizen].CurrentLocation == Citizen.Location.Moving) {
+
+					this.policeveh = this.MyCitizen.m_citizens.m_buffer [m_citizen].m_vehicle;
+
+					if (this.policeveh != 0) {
+						VehID.Vehicle = policeveh;
+
+						ButtVehicle.atlas = MyAtlas.FavCimsAtlas;
+						ButtVehicle.normalBgSprite = "FavCimsPoliceVehicle";
+						ButtVehicle.isEnabled = true;
+						ButtVehicle.playAudioEvents = true;
+						ButtVehicle.tooltip = this.MyVehicle.GetVehicleName (policeveh) + " - " + Locale.Get ("VEHICLE_STATUS_PRISON_RETURN");
+
+						ButtDestination.isEnabled = false;
+						ButtDestination.text = FavCimsLang.text ("Transported_to_Prison");
+					}
+				} else {
+					ButtDestination.isEnabled = true;
+					ButtDestination.text = FavCimsLang.text ("Jailed_into") + CitizenTarget;
+					ButtVehicle.atlas = UIView.GetAView().defaultAtlas;
+				}
+			}			
 		}
 		
 		internal void FamilyPet(uint m_citizen) {
@@ -622,7 +722,7 @@ namespace FavoriteCims
 			int RandXMax = Screen.width / 4;
 			
 			int RandYMin = 100;
-			int RandYMax = Screen.height - (int)this.height - RandYMin;
+			int RandYMax = (Screen.height - ((int)this.height*2)) - RandYMin;
 			
 			System.Random rnd = new System.Random ();
 			
@@ -988,7 +1088,7 @@ namespace FavoriteCims
 			this.BubbleTargetIcon.disabledBgSprite = "LocationMarkerDisabled";
 			this.BubbleTargetIcon.playAudioEvents = true;
 			this.BubbleTargetIcon.relativePosition = new Vector3 (4, 0);
-			this.BubbleTargetIcon.eventMouseDown += (component, eventParam) => GoToCitizen (MyInstanceID);
+			this.BubbleTargetIcon.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => GoToCitizen (MyInstanceID, eventParam);
 
 			//Wealth + Health Panel
 			this.BubbleRow2Panel = this.BubbleFamPortBgSprite.AddUIComponent<UIPanel> ();
@@ -1124,7 +1224,7 @@ namespace FavoriteCims
 			this.FavCimsWorkingPlace.dropShadowOffset = new Vector2 (1, -1);
 			this.FavCimsWorkingPlace.dropShadowColor = new Color32 (0, 0, 0, 0);
 			this.FavCimsWorkingPlace.tooltipBox = UIView.GetAView().defaultTooltipBox;
-			this.FavCimsWorkingPlace.eventMouseDown += (component, eventParam) => GoToInstance (WorkPlaceID);
+			this.FavCimsWorkingPlace.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => GoToInstance (WorkPlaceID, eventParam);
 			this.FavCimsWorkingPlace.relativePosition = new Vector3 (0, 1);
 			
 			//Work Panel
@@ -1162,7 +1262,7 @@ namespace FavoriteCims
 			this.BubblePersonalCarButton.texture = TextureDB.BubbleCarDisabled;
 			this.BubblePersonalCarButton.tooltipBox = UIView.GetAView().defaultTooltipBox;
 			this.BubblePersonalCarButton.absolutePosition = new Vector3(BubbleTargetIcon.absolutePosition.x, this.BubbleTargetIcon.absolutePosition.y + this.BubbleTargetIcon.height);
-			this.BubblePersonalCarButton.eventMouseDown += (component, eventParam) => this.GoToInstance(this.PersonalVehicleID);
+			this.BubblePersonalCarButton.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => this.GoToInstance(this.PersonalVehicleID, eventParam);
 			this.BubblePersonalCarButton.BringToFront ();
 
 			//Activity Panel
@@ -1193,7 +1293,7 @@ namespace FavoriteCims
 			this.FavCimsLastActivityVehicleButton.width = 18;
 			this.FavCimsLastActivityVehicleButton.height = 17;
 			this.FavCimsLastActivityVehicleButton.relativePosition = new Vector3 (0, 0);
-			this.FavCimsLastActivityVehicleButton.eventMouseDown += (component, eventParam) => GoToInstance(this.MyVehicleID);
+			this.FavCimsLastActivityVehicleButton.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => GoToInstance(this.MyVehicleID, eventParam);
 			
 			//Last Activity
 			this.FavCimsLastActivity = this.BubbleActivitySprite.AddUIComponent<UIButton> ();
@@ -1222,7 +1322,7 @@ namespace FavoriteCims
 			this.FavCimsLastActivity.dropShadowColor = new Color32 (0, 0, 0, 0);
 			this.FavCimsLastActivity.maximumSize = new Vector2 (this.BubbleActivitySprite.width-40, this.BubbleActivitySprite.height);
 			this.FavCimsLastActivity.tooltipBox = UIView.GetAView().defaultTooltipBox;
-			this.FavCimsLastActivity.eventMouseDown += (component, eventParam) => GoToInstance(this.MyTargetID);
+			this.FavCimsLastActivity.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => GoToInstance(this.MyTargetID, eventParam);
 			this.FavCimsLastActivity.relativePosition = new Vector3 (27, 1);
 			
 			//District Panel
@@ -1356,7 +1456,7 @@ namespace FavoriteCims
 			this.BubbleHomeName.maximumSize = new Vector2 (this.BubbleHomePanel.width, this.BubbleHomePanel.height);
 			this.BubbleHomeName.tooltipBox = UIView.GetAView().defaultTooltipBox;
 			//this.BubbleHomeName.text = "prova";
-			this.BubbleHomeName.eventMouseDown += (component, eventParam) => this.GoToInstance (this.CitizenHomeID);
+			this.BubbleHomeName.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => this.GoToInstance (this.CitizenHomeID, eventParam);
 			this.BubbleHomeName.relativePosition =  Vector3.zero;
 			
 			//Details & Problems Icons Panel
@@ -1482,14 +1582,14 @@ namespace FavoriteCims
 			this.BubbleFamilyBarDogButton.texture = TextureDB.BubbleDogDisabled;
 			this.BubbleFamilyBarDogButton.tooltipBox = UIView.GetAView().defaultTooltipBox;
 			this.BubbleFamilyBarDogButton.relativePosition = new Vector3(175,0);
-			this.BubbleFamilyBarDogButton.eventMouseDown += (component, eventParam) => this.GoToInstance(this.MyPetID);
+			this.BubbleFamilyBarDogButton.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => this.GoToInstance(this.MyPetID, eventParam);
 			//Header Family Car SpriteButton
 			this.BubbleFamilyBarCarButton = this.BubbleFamilyBarPanel.AddUIComponent<UITextureSprite> ();
 			this.BubbleFamilyBarCarButton.name = "BubbleFamilyBarCarButton";
 			this.BubbleFamilyBarCarButton.texture = TextureDB.BubbleCarDisabled;
 			this.BubbleFamilyBarCarButton.tooltipBox = UIView.GetAView().defaultTooltipBox;
 			this.BubbleFamilyBarCarButton.relativePosition = new Vector3(this.BubbleFamilyBarDogButton.relativePosition.x + this.BubbleFamilyBarDogButton.width + 10,0);
-			this.BubbleFamilyBarCarButton.eventMouseDown += (component, eventParam) => this.GoToInstance(this.FamilyVehicleID);
+			this.BubbleFamilyBarCarButton.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => this.GoToInstance(this.FamilyVehicleID, eventParam);
 			//Family Panel
 			this.BubbleFamilyPanel = this.AddUIComponent<UIPanel>();
 			this.BubbleFamilyPanel.name = "BubbleFamilyPanel";
@@ -1582,7 +1682,7 @@ namespace FavoriteCims
 			this.BubblePartnerName.focusedTextColor = new Color32 (153, 0, 0, 0);
 			this.BubblePartnerName.disabledTextColor = new Color32 (51, 51, 51, 160); //r,g,b,a
 			this.BubblePartnerName.relativePosition = new Vector3 (this.BubblePartnerLove.relativePosition.x + this.BubblePartnerLove.width, 2);
-			this.BubblePartnerName.eventMouseDown += (component, eventParam) => this.GoToCitizen(this.PartnerID);
+			this.BubblePartnerName.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => this.GoToCitizen(this.PartnerID, eventParam);
 			//Partner Real Age Button
 			this.BubbleParnerAgeButton = this.BubblePartnerBgBar.AddUIComponent<UIButton> ();
 			this.BubbleParnerAgeButton.name = "BubbleParnerAgeButton";
@@ -1622,7 +1722,7 @@ namespace FavoriteCims
 			this.BubblePartnerVehicleButton.width = 22;
 			this.BubblePartnerVehicleButton.height = 22;
 			this.BubblePartnerVehicleButton.relativePosition = new Vector3 (7, 2);
-			this.BubblePartnerVehicleButton.eventMouseDown += (component, eventParam) => GoToInstance(this.PartnerVehID);
+			this.BubblePartnerVehicleButton.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => GoToInstance(this.PartnerVehID, eventParam);
 			//Partner Activity Destination
 			this.BubblePartnerDestination = this.BubblePartnerActivityBar.AddUIComponent<UIButton> ();
 			this.BubblePartnerDestination.name = "BubblePartnerDestination";
@@ -1649,7 +1749,7 @@ namespace FavoriteCims
 			this.BubblePartnerDestination.dropShadowColor = new Color32 (0, 0, 0, 0);
 			this.BubblePartnerDestination.maximumSize = new Vector2 (this.BubblePartnerDestination.width, this.BubblePartnerActivityBar.height);
 			this.BubblePartnerDestination.relativePosition = new Vector3 (this.BubblePartnerVehicleButton.relativePosition.x + this.BubblePartnerVehicleButton.width +5, 2);
-			this.BubblePartnerDestination.eventMouseDown += (component, eventParam) => GoToInstance(this.PartnerTarget);
+			this.BubblePartnerDestination.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => GoToInstance(this.PartnerTarget, eventParam);
 			//Parent 1 Panel
 			this.Parent1Panel = this.BubbleFamilyPanel.AddUIComponent<UIPanel>();
 			this.Parent1Panel.name = "PartnerPanel";
@@ -1698,7 +1798,7 @@ namespace FavoriteCims
 			this.BubbleParent1Name.focusedTextColor = new Color32 (153, 0, 0, 0);
 			this.BubbleParent1Name.disabledTextColor = new Color32 (51, 51, 51, 160); //r,g,b,a
 			this.BubbleParent1Name.relativePosition = new Vector3 (this.BubbleParent1Love.relativePosition.x + this.BubbleParent1Love.width, 2);
-			this.BubbleParent1Name.eventMouseDown += (component, eventParam) => this.GoToCitizen(this.Parent1ID);
+			this.BubbleParent1Name.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => this.GoToCitizen(this.Parent1ID, eventParam);
 			//Parent1 Real Age Button
 			this.BubbleParent1AgeButton = this.BubbleParent1BgBar.AddUIComponent<UIButton> ();
 			this.BubbleParent1AgeButton.name = "BubbleParent1AgeButton";
@@ -1737,7 +1837,7 @@ namespace FavoriteCims
 			this.BubbleParent1VehicleButton.width = 22;
 			this.BubbleParent1VehicleButton.height = 22;
 			this.BubbleParent1VehicleButton.relativePosition = new Vector3 (7, 2);
-			this.BubbleParent1VehicleButton.eventMouseDown += (component, eventParam) => GoToInstance(this.Parent1VehID);
+			this.BubbleParent1VehicleButton.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => GoToInstance(this.Parent1VehID, eventParam);
 			//Parent1 Activity Destination
 			this.BubbleParent1Destination = this.BubbleParent1ActivityBar.AddUIComponent<UIButton> ();
 			this.BubbleParent1Destination.name = "BubbleParent1Destination";
@@ -1764,7 +1864,7 @@ namespace FavoriteCims
 			this.BubbleParent1Destination.dropShadowColor = new Color32 (0, 0, 0, 0);
 			this.BubbleParent1Destination.maximumSize = new Vector2 (this.BubbleParent1Destination.width, this.BubbleParent1ActivityBar.height);
 			this.BubbleParent1Destination.relativePosition = new Vector3 (this.BubblePartnerDestination.relativePosition.x, 2);
-			this.BubbleParent1Destination.eventMouseDown += (component, eventParam) => GoToInstance(this.Parent1Target);
+			this.BubbleParent1Destination.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => GoToInstance(this.Parent1Target, eventParam);
 			
 			//No Child Panel
 			this.NoChildsPanel = this.BubbleFamilyPanel.AddUIComponent<UIPanel>();
@@ -1847,7 +1947,7 @@ namespace FavoriteCims
 			this.BubbleFamilyMember2Name.focusedTextColor = new Color32 (153, 0, 0, 0);
 			this.BubbleFamilyMember2Name.disabledTextColor = new Color32 (51, 51, 51, 160); //r,g,b,a
 			this.BubbleFamilyMember2Name.relativePosition = new Vector3 (this.BubbleFamilyMember2IconSprite.relativePosition.x + this.BubbleFamilyMember2IconSprite.width+2, 2);
-			this.BubbleFamilyMember2Name.eventMouseDown += (component, eventParam) => this.GoToCitizen(this.Parent2ID);
+			this.BubbleFamilyMember2Name.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => this.GoToCitizen(this.Parent2ID, eventParam);
 			//Family Member2 Real Age Button
 			this.BubbleFamilyMember2AgeButton = this.BubbleFamilyMember2BgBar.AddUIComponent<UIButton> ();
 			this.BubbleFamilyMember2AgeButton.name = "BubbleFamilyMember2AgeButton";
@@ -1886,7 +1986,7 @@ namespace FavoriteCims
 			this.BubbleFamilyMember2ActivityVehicleButton.width = 22;
 			this.BubbleFamilyMember2ActivityVehicleButton.height = 22;
 			this.BubbleFamilyMember2ActivityVehicleButton.relativePosition = new Vector3 (7, 2);
-			this.BubbleFamilyMember2ActivityVehicleButton.eventMouseDown += (component, eventParam) => GoToInstance(this.Parent2VehID);
+			this.BubbleFamilyMember2ActivityVehicleButton.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => GoToInstance(this.Parent2VehID, eventParam);
 			//Family 2 Activity Destination
 			this.BubbleFamilyMember2ActivityDestination = this.BubbleFamilyMember2ActivityBgBar.AddUIComponent<UIButton> ();
 			this.BubbleFamilyMember2ActivityDestination.name = "BubbleFamilyMember2ActivityDestination";
@@ -1913,7 +2013,7 @@ namespace FavoriteCims
 			this.BubbleFamilyMember2ActivityDestination.dropShadowColor = new Color32 (0, 0, 0, 0);
 			this.BubbleFamilyMember2ActivityDestination.maximumSize = new Vector2 (this.BubbleFamilyMember2ActivityDestination.width, this.BubbleFamilyMember2ActivityBgBar.height);
 			this.BubbleFamilyMember2ActivityDestination.relativePosition = new Vector3 (this.BubblePartnerDestination.relativePosition.x, 2);
-			this.BubbleFamilyMember2ActivityDestination.eventMouseDown += (component, eventParam) => GoToInstance(this.Parent2Target);
+			this.BubbleFamilyMember2ActivityDestination.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => GoToInstance(this.Parent2Target, eventParam);
 			
 			//Parent 3 Panel
 			this.FamilyMember3Panel = this.BubbleFamilyPanel.AddUIComponent<UIPanel>();
@@ -1962,7 +2062,7 @@ namespace FavoriteCims
 			this.BubbleFamilyMember3Name.focusedTextColor = new Color32 (153, 0, 0, 0);
 			this.BubbleFamilyMember3Name.disabledTextColor = new Color32 (51, 51, 51, 160); //r,g,b,a
 			this.BubbleFamilyMember3Name.relativePosition = new Vector3 (this.BubbleFamilyMember3IconSprite.relativePosition.x + this.BubbleFamilyMember3IconSprite.width+2, 2);
-			this.BubbleFamilyMember3Name.eventMouseDown += (component, eventParam) => this.GoToCitizen(this.Parent3ID);
+			this.BubbleFamilyMember3Name.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => this.GoToCitizen(this.Parent3ID, eventParam);
 			//Family Member3 Real Age Button
 			this.BubbleFamilyMember3AgeButton = this.BubbleFamilyMember3BgBar.AddUIComponent<UIButton> ();
 			this.BubbleFamilyMember3AgeButton.name = "BubbleFamilyMember3AgeButton";
@@ -2001,7 +2101,7 @@ namespace FavoriteCims
 			this.BubbleFamilyMember3ActivityVehicleButton.width = 22;
 			this.BubbleFamilyMember3ActivityVehicleButton.height = 22;
 			this.BubbleFamilyMember3ActivityVehicleButton.relativePosition = new Vector3 (7, 2);
-			this.BubbleFamilyMember3ActivityVehicleButton.eventMouseDown += (component, eventParam) => GoToInstance(this.Parent3VehID);
+			this.BubbleFamilyMember3ActivityVehicleButton.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => GoToInstance(this.Parent3VehID, eventParam);
 			//Family 3 Activity Destination
 			this.BubbleFamilyMember3ActivityDestination = this.BubbleFamilyMember3ActivityBgBar.AddUIComponent<UIButton> ();
 			this.BubbleFamilyMember3ActivityDestination.name = "BubbleFamilyMember3ActivityDestination";
@@ -2028,7 +2128,7 @@ namespace FavoriteCims
 			this.BubbleFamilyMember3ActivityDestination.dropShadowColor = new Color32 (0, 0, 0, 0);
 			this.BubbleFamilyMember3ActivityDestination.maximumSize = new Vector2 (this.BubbleFamilyMember3ActivityDestination.width, this.BubbleFamilyMember3ActivityBgBar.height);
 			this.BubbleFamilyMember3ActivityDestination.relativePosition = new Vector3 (this.BubblePartnerDestination.relativePosition.x, 2);
-			this.BubbleFamilyMember3ActivityDestination.eventMouseDown += (component, eventParam) => GoToInstance(this.Parent3Target);
+			this.BubbleFamilyMember3ActivityDestination.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => GoToInstance(this.Parent3Target, eventParam);
 			
 			//Parent 4 Panel
 			this.FamilyMember4Panel = this.BubbleFamilyPanel.AddUIComponent<UIPanel>();
@@ -2077,7 +2177,7 @@ namespace FavoriteCims
 			this.BubbleFamilyMember4Name.focusedTextColor = new Color32 (153, 0, 0, 0);
 			this.BubbleFamilyMember4Name.disabledTextColor = new Color32 (51, 51, 51, 160); //r,g,b,a
 			this.BubbleFamilyMember4Name.relativePosition = new Vector3 (this.BubbleFamilyMember4IconSprite.relativePosition.x + this.BubbleFamilyMember4IconSprite.width+2, 2);
-			this.BubbleFamilyMember4Name.eventMouseDown += (component, eventParam) => this.GoToCitizen(this.Parent4ID);
+			this.BubbleFamilyMember4Name.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => this.GoToCitizen(this.Parent4ID, eventParam);
 			//Family Member4 Real Age Button
 			this.BubbleFamilyMember4AgeButton = this.BubbleFamilyMember4BgBar.AddUIComponent<UIButton> ();
 			this.BubbleFamilyMember4AgeButton.name = "BubbleFamilyMember4AgeButton";
@@ -2117,7 +2217,7 @@ namespace FavoriteCims
 			this.BubbleFamilyMember4ActivityVehicleButton.width = 22;
 			this.BubbleFamilyMember4ActivityVehicleButton.height = 22;
 			this.BubbleFamilyMember4ActivityVehicleButton.relativePosition = new Vector3 (7, 2);
-			this.BubbleFamilyMember4ActivityVehicleButton.eventMouseDown += (component, eventParam) => GoToInstance(this.Parent4VehID);
+			this.BubbleFamilyMember4ActivityVehicleButton.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => GoToInstance(this.Parent4VehID, eventParam);
 			//Family 4 Activity Destination
 			this.BubbleFamilyMember4ActivityDestination = this.BubbleFamilyMember4ActivityBgBar.AddUIComponent<UIButton> ();
 			this.BubbleFamilyMember4ActivityDestination.name = "BubbleFamilyMember4ActivityDestination";
@@ -2144,14 +2244,15 @@ namespace FavoriteCims
 			this.BubbleFamilyMember4ActivityDestination.dropShadowColor = new Color32 (0, 0, 0, 0);
 			this.BubbleFamilyMember4ActivityDestination.maximumSize = new Vector2 (this.BubbleFamilyMember4ActivityDestination.width, this.BubbleFamilyMember4ActivityBgBar.height);
 			this.BubbleFamilyMember4ActivityDestination.relativePosition = new Vector3 (this.BubblePartnerDestination.relativePosition.x, 2);
-			this.BubbleFamilyMember4ActivityDestination.eventMouseDown += (component, eventParam) => GoToInstance(this.Parent4Target);
-			
-			this.absolutePosition = new Vector3 ((float)rnd.Next (RandXMin, RandXMax), (float)rnd.Next (RandYMin, RandYMax));
-			//this.absolutePosition = new Vector3 (FavCimsMainClass.FavCimsPanel.absolutePosition.x - this.width - 15, (FavCimsMainClass.FavCimsPanel.absolutePosition.y / 2) - (this.height / 2));//(MouseClickPos.y - Screen.height)*-1);
-			//this.BringToFront ();
-			
-			///////////////End Bubble///////////////
-		}
+			this.BubbleFamilyMember4ActivityDestination.eventMouseUp += (UIComponent component, UIMouseEventParameter eventParam) => GoToInstance(this.Parent4Target, eventParam);
+
+            //this.absolutePosition = new Vector3 ((float)rnd.Next (RandXMin, RandXMax), (float)rnd.Next (RandYMin, RandYMax));
+            this.absolutePosition = new Vector3((float)rnd.Next(RandXMin, RandXMax), 200f);
+            //this.absolutePosition = new Vector3 (FavCimsMainClass.FavCimsPanel.absolutePosition.x - this.width - 15, (FavCimsMainClass.FavCimsPanel.absolutePosition.y / 2) - (this.height / 2));//(MouseClickPos.y - Screen.height)*-1);
+            //this.BringToFront ();
+
+            ///////////////End Bubble///////////////
+        }
 
 		public override void Update() {
 
@@ -2219,9 +2320,10 @@ namespace FavoriteCims
 							
 							//Citizen Name
 							this.BubbleHeaderCitizenName.text = this.MyCitizen.GetCitizenName (citizen);
-							
-							//Citizen Genre
-							if (Citizen.GetGender (citizen) == Citizen.Gender.Female) {
+
+                            //Citizen Genre
+                            var tmp_gender = Citizen.GetGender(citizen);
+                            if (tmp_gender == Citizen.Gender.Female) {
 								this.BubbleHeaderIconSprite.texture = TextureDB.BubbleHeaderIconSpriteTextureFemale;
 								this.BubbleHeaderCitizenName.textColor = new Color32 (255, 102, 204, 213); //r,g,b,a
 								this.BubbleHeaderCitizenName.hoveredTextColor = new Color32 (255, 102, 204, 213); //r,g,b,a
@@ -2319,8 +2421,16 @@ namespace FavoriteCims
 							int tmp_happiness = Citizen.GetHappiness (tmp_health, tmp_wellbeing);
 							//string Happiness = Citizen.GetHappinessLevel (tmp_happiness).ToString (); //Bad, Poor, Good, Excellent, Suberb
 							string HappinessIcon = GetHappinessString (Citizen.GetHappinessLevel (tmp_happiness));
-							this.BubbleRow1HappyIcon.normalBgSprite = HappinessIcon;
-							this.BubbleRow1HappyIcon.tooltip = FavCimsLang.text("HappinessLabel") + FavCimsLang.text (HappinessIcon);
+
+							if (this.MyCitizen.m_citizens.m_buffer [(int)(IntPtr)citizen].Arrested && this.MyCitizen.m_citizens.m_buffer [(int)(IntPtr)citizen].Criminal) {
+								this.BubbleRow1HappyIcon.atlas = MyAtlas.FavCimsAtlas;
+								this.BubbleRow1HappyIcon.normalBgSprite = "FavCimsCrimeArrested";
+								this.BubbleRow1HappyIcon.tooltip = FavCimsLang.text ("Citizen_Arrested");
+							} else {
+								this.BubbleRow1HappyIcon.atlas = UIView.GetAView().defaultAtlas;
+								this.BubbleRow1HappyIcon.normalBgSprite = HappinessIcon;
+								this.BubbleRow1HappyIcon.tooltip = FavCimsLang.text("HappinessLabel") + FavCimsLang.text (HappinessIcon);
+							}
 							
 							//Age Group (Age Phase)
 							int tmp_age = this.MyCitizen.m_citizens.m_buffer [MyInstanceID.Index].m_age;
@@ -2359,11 +2469,12 @@ namespace FavoriteCims
 							//Working Place
 							this.WorkPlace = this.MyCitizen.m_citizens.m_buffer [MyInstanceID.Index].m_workBuilding;
 							if (this.MyCitizen.m_citizens.m_buffer [MyInstanceID.Index].GetCurrentSchoolLevel (citizen) != ItemClass.Level.None) {
-								this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = null;
+                                this.isStudent = true;
+                                this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = null;
 								this.FavCimsWorkingPlaceSprite.texture = TextureDB.FavCimsWorkingPlaceTextureStudent;
 								this.FavCimsCitizenWorkPlaceLevelSprite.texture = null;
 								//this.CitizenRowData ["workplace"] = "Student";
-								this.FavCimsWorkingPlace.tooltip = Locale.Get ("CITIZEN_SCHOOL_LEVEL", this.MyCitizen.m_citizens.m_buffer [MyInstanceID.Index].GetCurrentSchoolLevel (citizen).ToString ());
+								this.FavCimsWorkingPlace.tooltip = Locale.Get ("CITIZEN_SCHOOL_LEVEL", this.MyCitizen.m_citizens.m_buffer [MyInstanceID.Index].GetCurrentSchoolLevel (citizen).ToString ()) + " " + this.MyBuilding.GetBuildingName(this.WorkPlace, this.MyInstanceID);
 							} else if (this.WorkPlace == 0) {
 								this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = null;
 								
@@ -2391,37 +2502,89 @@ namespace FavoriteCims
 							
 							//Perchè l'edificio è presente sia che lavori sia che vada a scuola, se lo metto nell'else qui sopra se va a scuola non comparirebbe nulla o dovrei scriverlo 2 volte.
 							if (this.WorkPlace != 0) {
-								this.WorkPlaceID.Building = this.WorkPlace;
+
+                                string str = string.Empty;
+                                if(!isStudent)
+                                {
+                                    CommonBuildingAI buildingAi = this.MyBuilding.m_buildings.m_buffer[(int)this.WorkPlace].Info.m_buildingAI as CommonBuildingAI;
+
+                                    if (buildingAi != null)
+                                        str = buildingAi.GetTitle(tmp_gender, tmp_education, this.WorkPlace, citizen);
+                                    if (str == string.Empty)
+                                    {
+                                        int num = new Randomizer((uint)this.WorkPlace + citizen).Int32(1, 5);
+                                        switch (tmp_education)
+                                        {
+                                            case Citizen.Education.Uneducated:
+                                                str = Locale.Get(tmp_gender != Citizen.Gender.Female ? "CITIZEN_OCCUPATION_PROFESSION_UNEDUCATED" : "CITIZEN_OCCUPATION_PROFESSION_UNEDUCATED_FEMALE", num.ToString()) + " " + Locale.Get("CITIZEN_OCCUPATION_LOCATIONPREPOSITION");
+                                                break;
+                                            case Citizen.Education.OneSchool:
+                                                str = Locale.Get(tmp_gender != Citizen.Gender.Female ? "CITIZEN_OCCUPATION_PROFESSION_EDUCATED" : "CITIZEN_OCCUPATION_PROFESSION_EDUCATED_FEMALE", num.ToString()) + " " + Locale.Get("CITIZEN_OCCUPATION_LOCATIONPREPOSITION");
+                                                break;
+                                            case Citizen.Education.TwoSchools:
+                                                str = Locale.Get(tmp_gender != Citizen.Gender.Female ? "CITIZEN_OCCUPATION_PROFESSION_WELLEDUCATED" : "CITIZEN_OCCUPATION_PROFESSION_WELLEDUCATED_FEMALE", num.ToString()) + " " + Locale.Get("CITIZEN_OCCUPATION_LOCATIONPREPOSITION");
+                                                break;
+                                            case Citizen.Education.ThreeSchools:
+                                                str = Locale.Get(tmp_gender != Citizen.Gender.Female ? "CITIZEN_OCCUPATION_PROFESSION_HIGHLYEDUCATED" : "CITIZEN_OCCUPATION_PROFESSION_HIGHLYEDUCATED_FEMALE", num.ToString()) + " " + Locale.Get("CITIZEN_OCCUPATION_LOCATIONPREPOSITION");
+                                                break;
+                                        }
+                                    }
+                                }
+                                
+                                this.WorkPlaceID.Building = this.WorkPlace;
 								//this.CitizenRowData ["workplace"] = this.MyBuilding.GetBuildingName (this.WorkPlace, this.MyInstanceID);
-								this.FavCimsWorkingPlace.text = this.MyBuilding.GetBuildingName (this.WorkPlace, this.MyInstanceID);
+								this.FavCimsWorkingPlace.text = str + " " + this.MyBuilding.GetBuildingName (this.WorkPlace, this.MyInstanceID);
 								this.FavCimsWorkingPlace.isEnabled = true;
 								this.WorkInfo = this.MyBuilding.m_buildings.m_buffer [WorkPlaceID.Index].Info;
-								
-								if (this.WorkInfo.m_class.m_service == ItemClass.Service.Commercial) {
+
+                                if (this.WorkInfo.m_class.m_service == ItemClass.Service.Commercial) {
 									this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = null;
 									if (this.WorkInfo.m_class.m_subService == ItemClass.SubService.CommercialHigh) {
 										this.FavCimsWorkingPlace.textColor = new Color32 (0, 51, 153, 147); //r,g,b,a
 										this.FavCimsWorkingPlaceSprite.texture = TextureDB.FavCimsCitizenCommercialHighTexture;
 										this.FavCimsWorkingPlace.tooltip = Locale.Get ("ZONEDBUILDING_TITLE", ItemClass.SubService.CommercialHigh.ToString ());
+									
+									} else if (this.WorkInfo.m_class.m_subService == ItemClass.SubService.CommercialEco) {
+
+										this.FavCimsWorkingPlace.textColor = new Color32 (0, 150, 136, 116); //r,g,b,a
+										this.FavCimsWorkingPlaceSprite.texture = TextureDB.FavCimsCitizenCommercialHighTexture;
+										this.FavCimsWorkingPlace.tooltip = FavCimsLang.text ("Buildings_Type_CommercialEco");
+
+									} else if (this.WorkInfo.m_class.m_subService == ItemClass.SubService.CommercialLeisure) {
+
+										this.FavCimsWorkingPlace.textColor = new Color32 (219, 68, 55, 3); //r,g,b,a
+										this.FavCimsWorkingPlaceSprite.texture = TextureDB.FavCimsCitizenCommercialHighTexture;
+										this.FavCimsWorkingPlace.tooltip = FavCimsLang.text ("Buildings_Type_CommercialLeisure");
+
+									} else if (this.WorkInfo.m_class.m_subService == ItemClass.SubService.CommercialTourist) {
+
+										this.FavCimsWorkingPlace.textColor = new Color32 (156, 39, 176, 194); //r,g,b,a
+										this.FavCimsWorkingPlaceSprite.texture = TextureDB.FavCimsCitizenCommercialHighTexture;
+										this.FavCimsWorkingPlace.tooltip = FavCimsLang.text ("Buildings_Type_CommercialTourist");
+
 									} else {
 										this.FavCimsWorkingPlace.textColor = new Color32 (0, 153, 204, 130); //r,g,b,a
 										this.FavCimsWorkingPlaceSprite.texture = TextureDB.FavCimsCitizenCommercialLowTexture;
 										this.FavCimsWorkingPlace.tooltip = Locale.Get ("ZONEDBUILDING_TITLE", ItemClass.SubService.CommercialLow.ToString ());
 									}
-									
-									switch (this.WorkInfo.m_class.m_level) 
-									{
-										case ItemClass.Level.Level3:
-											this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsIndustrialLevel [3];
-											break;
-										case ItemClass.Level.Level2:
-											this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsCommercialLevel [2];
-											break;
-										default:
-											this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsCommercialLevel [1];
-											break;
+
+									if(this.WorkInfo.m_class.m_subService == ItemClass.SubService.CommercialHigh || this.WorkInfo.m_class.m_subService == ItemClass.SubService.CommercialLow) {
+										switch (this.WorkInfo.m_class.m_level) 
+										{
+											case ItemClass.Level.Level3:
+												this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsCommercialLevel [3];
+												break;
+											case ItemClass.Level.Level2:
+												this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsCommercialLevel [2];
+												break;
+											default:
+												this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsCommercialLevel [1];
+												break;
+										}
+									} else {
+										this.FavCimsCitizenWorkPlaceLevelSprite.texture = null;
 									}
-									
+
 								} else if (this.WorkInfo.m_class.m_service == ItemClass.Service.Industrial) {
 									
 									this.FavCimsWorkingPlace.textColor = new Color32 (255, 204, 0, 32); //r,g,b,a
@@ -2433,53 +2596,83 @@ namespace FavoriteCims
 										this.FavCimsWorkingPlaceSprite.texture = null;
 										this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "IconPolicyFarming";
 										break;
-									case ItemClass.SubService.IndustrialForestry:
+                                    case ItemClass.SubService.PlayerIndustryFarming: //New code 0.3.x
+                                        this.FavCimsWorkingPlaceSprite.texture = null;
+                                        this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "IconPolicyFarming";
+                                        break;
+                                    case ItemClass.SubService.IndustrialForestry:
 										this.FavCimsWorkingPlaceSprite.texture = null;
 										this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "ResourceForestry";
 										break;
-									case ItemClass.SubService.IndustrialOil:
+                                    case ItemClass.SubService.PlayerIndustryForestry: //New code 0.3.x
+                                        this.FavCimsWorkingPlaceSprite.texture = null;
+                                        this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "ResourceForestry";
+                                        break;
+                                    case ItemClass.SubService.IndustrialOil:
 										this.FavCimsWorkingPlaceSprite.texture = null;
 										this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "IconPolicyOil";
 										break;
-									case ItemClass.SubService.IndustrialOre:
+                                    case ItemClass.SubService.PlayerIndustryOil: //New code 0.3.x
+                                        this.FavCimsWorkingPlaceSprite.texture = null;
+                                        this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "IconPolicyOil";
+                                        break;
+                                    case ItemClass.SubService.IndustrialOre:
 										this.FavCimsWorkingPlaceSprite.texture = null;
 										this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "IconPolicyOre";
 										break;
-									default:
+                                    case ItemClass.SubService.PlayerIndustryOre: //New code 0.3.x
+                                        this.FavCimsWorkingPlaceSprite.texture = null;
+                                        this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "IconPolicyOre";
+                                        break;
+                                    default:
 										this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = null;
 										this.FavCimsWorkingPlaceSprite.texture = TextureDB.FavCimsCitizenIndustrialGenericTexture;
 										break;
 									}
 									
-									switch (this.WorkInfo.m_class.m_level) 
-									{
-									case ItemClass.Level.Level3:
-										this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsIndustrialLevel [3];
-										break;
-									case ItemClass.Level.Level2:
-										this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsCommercialLevel [2];
-										break;
-									default:
-										this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsCommercialLevel [1];
-										break;
+									if(this.WorkInfo.m_class.m_subService == ItemClass.SubService.IndustrialGeneric) {
+										switch (this.WorkInfo.m_class.m_level)
+										{
+										case ItemClass.Level.Level3:
+											this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsIndustrialLevel [3];
+											break;
+										case ItemClass.Level.Level2:
+											this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsIndustrialLevel [2];
+											break;
+										default:
+											this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsIndustrialLevel [1];
+											break;
+										}
+									} else {
+										this.FavCimsCitizenWorkPlaceLevelSprite.texture = null;
 									}
 									
 								} else if (this.WorkInfo.m_class.m_service == ItemClass.Service.Office) {
 									this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = null;
 									this.FavCimsWorkingPlace.textColor = new Color32 (0, 204, 255, 128); //r,g,b,a
 									this.FavCimsWorkingPlaceSprite.texture = TextureDB.FavCimsCitizenOfficeTexture;
-									this.FavCimsWorkingPlace.tooltip = Locale.Get ("ZONEDBUILDING_TITLE", "Office");
-									
+
+									switch (this.WorkInfo.m_class.m_subService) 
+									{
+									case ItemClass.SubService.OfficeHightech:
+										this.FavCimsWorkingPlace.tooltip = Locale.Get ("ZONEDBUILDING_TITLE", "Office") + " Eco";
+										break;
+
+									default:
+										this.FavCimsWorkingPlace.tooltip = Locale.Get ("ZONEDBUILDING_TITLE", "Office");
+										break;
+									}
+
 									switch (this.WorkInfo.m_class.m_level) 
 									{
 									case ItemClass.Level.Level3:
-										this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsIndustrialLevel [3];
+										this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsOfficeLevel [3];
 										break;
 									case ItemClass.Level.Level2:
-										this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsCommercialLevel [2];
+										this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsOfficeLevel [2];
 										break;
 									default:
-										this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsCommercialLevel [1];
+										this.FavCimsCitizenWorkPlaceLevelSprite.texture = TextureDB.FavCimsOfficeLevel [1];
 										break;
 									}
 									
@@ -2518,23 +2711,51 @@ namespace FavoriteCims
 										this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "SubBarBeautificationParksnPlazas";
 										this.FavCimsWorkingPlace.tooltip = Locale.Get ("SERVICE_DESC", "Beautification");
 										break;
-									case ItemClass.Service.Government:
-										this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "ToolbarIconGovernment";
-										this.FavCimsWorkingPlace.tooltip = FavCimsLang.text ("Government_job");
-										break;
+									//case ItemClass.Service.Government:
+										//this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "ToolbarIconGovernment";
+										//this.FavCimsWorkingPlace.tooltip = FavCimsLang.text ("Government_job");
+										//break;
 									case ItemClass.Service.Water:
 										this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "IconPolicyWaterSaving";
 										this.FavCimsWorkingPlace.tooltip = FavCimsLang.text ("Water_job");
 										break;
 									case ItemClass.Service.PublicTransport:
-										this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "IconPolicyFreePublicTransport";
-										this.FavCimsWorkingPlace.tooltip = Locale.Get ("SERVICE_DESC", "PublicTransport");
+
+                                        switch (this.WorkInfo.m_class.m_subService)
+                                        {
+                                            case ItemClass.SubService.PublicTransportPost:
+                                                this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "SubBarPublicTransportPost";
+                                                this.FavCimsWorkingPlace.tooltip = Locale.Get("SUBSERVICE_DESC", "Post");
+                                                break;
+
+                                            default:
+                                                this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "IconPolicyFreePublicTransport";
+                                                this.FavCimsWorkingPlace.tooltip = Locale.Get("SERVICE_DESC", "PublicTransport");
+                                                break;
+                                        }
+                                        
 										break;
 									case ItemClass.Service.Monument:
 										this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "FeatureMonumentLevel6";
 										this.FavCimsWorkingPlace.tooltip = Locale.Get ("SERVICE_DESC", "Monuments");
 										break;
-									default:
+                                    case ItemClass.Service.Fishing: //New code 0.3.x
+                                        this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "SubBarIndustryFishing";
+                                        this.FavCimsWorkingPlace.tooltip = Locale.Get("SERVICE_DESC", "Fishing");
+                                        break;
+                                    case ItemClass.Service.Disaster: //New code 0.3.x
+                                        this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "SubBarFireDepartmentDisaster";
+                                        this.FavCimsWorkingPlace.tooltip = Locale.Get("MAIN_CATEGORY", "FireDepartmentDisaster");
+                                        break;
+                                    case ItemClass.Service.Museums: //New code 0.3.x
+                                        this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "SubBarCampusAreaMuseums";
+                                        this.FavCimsWorkingPlace.tooltip = Locale.Get("MAIN_CATEGORY", "CampusAreaMuseums");
+                                        break;
+                                    case ItemClass.Service.VarsitySports: //New code 0.3.x
+                                        this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "SubBarCampusAreaVarsitySports";
+                                        this.FavCimsWorkingPlace.tooltip = Locale.Get("SERVICE_DESC", "VarsitySports");
+                                        break;
+                                    default:
 										this.FavCimsWorkingPlace.textColor = new Color32 (255, 204, 0, 32); //r,g,b,a
 										this.FavCimsWorkingPlaceButtonGamDefImg.normalBgSprite = "IconPolicyNone";
 										this.FavCimsWorkingPlace.tooltip = null;
@@ -2576,6 +2797,14 @@ namespace FavoriteCims
 										this.BubbleHomeName.textColor = new Color32 (0, 102, 51, 100); //r,g,b,a
 										this.BubbleHomeIcon.texture = TextureDB.FavCimsCitizenHomeTextureHigh;
 										this.BubbleHomeName.tooltip = Locale.Get ("ZONEDBUILDING_TITLE", ItemClass.SubService.ResidentialHigh.ToString ());
+									}else if (this.HomeInfo.m_class.m_subService == ItemClass.SubService.ResidentialHighEco) {
+										this.BubbleHomeName.textColor = new Color32 (0, 102, 51, 100); //r,g,b,a
+										this.BubbleHomeIcon.texture = TextureDB.FavCimsCitizenHomeTextureHigh;
+										this.BubbleHomeName.tooltip = Locale.Get ("ZONEDBUILDING_TITLE", ItemClass.SubService.ResidentialHigh.ToString ()) + " Eco";
+									} else if (this.HomeInfo.m_class.m_subService == ItemClass.SubService.ResidentialLowEco) {
+										this.BubbleHomeName.textColor = new Color32 (0, 153, 0, 80); //r,g,b,a
+										this.BubbleHomeIcon.texture = TextureDB.FavCimsCitizenHomeTexture;
+										this.BubbleHomeName.tooltip = Locale.Get ("ZONEDBUILDING_TITLE", ItemClass.SubService.ResidentialLow.ToString ()) + " Eco";
 									} else if (this.HomeInfo.m_class.m_subService == ItemClass.SubService.ResidentialLow) {
 										this.BubbleHomeName.textColor = new Color32 (0, 153, 0, 80); //r,g,b,a
 										this.BubbleHomeIcon.texture = TextureDB.FavCimsCitizenHomeTexture;
@@ -2697,8 +2926,11 @@ namespace FavoriteCims
 										this.BubbleDetailsPollution.normalFgSprite = null;
 										this.BubbleDetailsPollution.tooltip = Locale.Get("NOTIFICATION_NONE");
 									}
-									
-									if(HomeProblems.ToString().Contains(Notification.Problem.Crime.ToString())) {
+
+									if (this.MyCitizen.m_citizens.m_buffer [(int)(IntPtr)citizen].Arrested && this.MyCitizen.m_citizens.m_buffer [(int)(IntPtr)citizen].Criminal) {
+										this.BubbleDetailsCrime.normalFgSprite = "TutorialGlow";
+										this.BubbleDetailsCrime.tooltip = FavCimsLang.text ("Citizen_Arrested");
+									} else if(HomeProblems.ToString().Contains(Notification.Problem.Crime.ToString())) {
 										this.BubbleDetailsCrime.normalFgSprite = "TutorialGlow";
 										this.BubbleDetailsCrime.tooltip = Locale.Get("NOTIFICATION_TITLE","Crime");
 									}else{

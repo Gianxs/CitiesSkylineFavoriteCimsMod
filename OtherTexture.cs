@@ -18,14 +18,126 @@ namespace FavoriteCims
 				"FavoriteCimsButtonHovered",
 				"FavoriteCimsButtonPressed",
 				"FavoriteCimsButtonFocused",
+				"FavoriteCimsButtonDisabled",
 				"icon_fav_subscribed",
-				"icon_fav_unsubscribed"
+				"icon_fav_unsubscribed",
+				"vehicleButton",
+				"vehicleButtonDisabled",
+				"vehicleButtonHovered",
+				"scrollbarthumb",
+				"scrollbartrack",
+				"bg_row1",
+				"bg_row2",
+				"touristIcon",
+				"driverIcon",
+				"passengerIcon",
+				"citizenbuttonenabled",
+				"citizenbuttondisabled",
+				"CommercialHigh",
+				"CommercialLow",
+				"homeIconHigh",
+				"homeIconLow",
+				"homelessIcon",
+				"houseofthedead",
+				"FavCimsCrimeArrested",
+                "FavCimsIconScooter",
+                "FavCimsPoliceVehicle",
+				"icon_citisenisgone",
+				"IndustrialIcon",
+				"nojob",
+				"OfficeIcon",
+				"workretired",
+				"workstudy",
+				"Car",
+				"CarDisabled",
+				"Dog",
+				"DogDisabled",
+				"Female",
+				"Male",
+				"BapartmentIcon",
+				"BcommercialIcon",
+				"BworkingIcon",
+				"greenArrowIcon",
+				"redArrowIcon",
+				"BuildingButtonIcon",
+				"BuildingButtonIconDisabled",
+				"BuildingButtonIconHovered",
+				"CommercialBuildingButtonIcon",
+				"CommercialBuildingButtonIconDisabled",
+				"CommercialBuildingButtonIconHovered",
+				"IndustrialBuildingButtonIcon",
+				"IndustrialBuildingButtonIconDisabled",
+				"IndustrialBuildingButtonIconHovered",
+				"focusIcon",
+				"focusIconFocused",
+				"focusIconDisabled"
+			};
+
+			string[] sPritesPath = {
+
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"",
+				"VehiclePanel.",
+				"VehiclePanel.",
+				"VehiclePanel.",
+				"VehiclePanel.",
+				"VehiclePanel.",
+				"VehiclePanel.",
+				"VehiclePanel.",
+				"VehiclePanel.",
+				"VehiclePanel.",
+				"VehiclePanel.",
+				"UIMainPanel.",
+				"UIMainPanel.",
+				"UIMainPanel.Rows.",
+				"UIMainPanel.Rows.",
+				"UIMainPanel.Rows.",
+				"UIMainPanel.Rows.",
+				"UIMainPanel.Rows.",
+				"UIMainPanel.Rows.",
+				"UIMainPanel.Rows.",
+                "UIMainPanel.Rows.",
+                "UIMainPanel.Rows.",
+				"UIMainPanel.Rows.",
+				"UIMainPanel.Rows.",
+				"UIMainPanel.Rows.",
+				"UIMainPanel.Rows.",
+				"UIMainPanel.Rows.",
+				"UIMainPanel.Rows.",
+				"UIMainPanel.BubblePanel.",
+				"UIMainPanel.BubblePanel.",
+				"UIMainPanel.BubblePanel.",
+				"UIMainPanel.BubblePanel.",
+				"UIMainPanel.BubblePanel.",
+				"UIMainPanel.BubblePanel.",
+				"BuildingPanels.",
+				"BuildingPanels.",
+				"BuildingPanels.",
+				"BuildingPanels.",
+				"BuildingPanels.",
+				"BuildingPanels.",
+				"BuildingPanels.",
+				"BuildingPanels.",
+				"BuildingPanels.",
+				"BuildingPanels.",
+				"BuildingPanels.",
+				"BuildingPanels.",
+				"BuildingPanels.",
+				"BuildingPanels.",
+				"BuildingPanels.",
+				"BuildingPanels.",
+				"BuildingPanels."
 			};
 			
-			FavCimsAtlas = CreateMyAtlas ("FavCimsAtlas", UIView.GetAView ().defaultAtlas.material, sPritesNames);
+			FavCimsAtlas = CreateMyAtlas ("FavCimsAtlas", UIView.GetAView ().defaultAtlas.material, sPritesPath, sPritesNames);
 		}
 		
-		UITextureAtlas CreateMyAtlas(string AtlasName, Material BaseMat, string[] sPritesNames){
+		UITextureAtlas CreateMyAtlas(string AtlasName, Material BaseMat, string[] sPritesPath, string[] sPritesNames){
 			
 			var size = 1024;
 			Texture2D atlasTex = new Texture2D(size, size, TextureFormat.ARGB32, false);
@@ -35,7 +147,7 @@ namespace FavoriteCims
 			
 			for(int i = 0; i < sPritesNames.Length; i++)
 			{
-				textures[i] = ResourceLoader.loadTexture(0, 0, sPritesNames[i] + ".png");
+				textures[i] = ResourceLoader.loadTexture(0, 0, sPritesPath[i] + sPritesNames[i] + ".png");
 			}
 			
 			rects = atlasTex.PackTextures(textures, 2, size);
@@ -46,6 +158,8 @@ namespace FavoriteCims
 			material.mainTexture = atlasTex;
 			atlas.material = material;
 			atlas.name = AtlasName;
+			//atlas.padding = 0;
+			//atlas.hasMipmaps = false;
 			
 			for (int i = 0; i < sPritesNames.Length; i++)
 			{
@@ -87,12 +201,19 @@ namespace FavoriteCims
 		public static Texture LittleStarGrey;
 		public static Texture LittleStarGold;
 
+		public static Texture VehiclePanelTitleBackground;
+		public static Texture VehiclePanelBackground;
+		public static Texture VehiclePanelFooterBackground;
+
 		//CitizenRow Textures//
 		//Row Separator Texture
 		public static Texture FavCimsSeparator;
 
-		//Happiness overried texture
+		//Happiness override texture
 		public static Texture FavCimsHappyOverride_texture;
+
+		//Citizen Name override texture
+		public static Texture FavCimsNameBgOverride_texture;
 
 		//Row Icons
 		public static Texture FavCimsCitizenHomeTexture;
@@ -165,6 +286,13 @@ namespace FavoriteCims
 				FavCimsHappyOverride_texture.filterMode = FilterMode.Bilinear;
 				FavCimsHappyOverride_texture.name = "FavCimsHappyOverride_texture";
 				FavCimsHappyOverride_texture.mipMapBias = -0.5f;
+
+				//Citizen Name Override Texture
+				FavCimsNameBgOverride_texture = ResourceLoader.loadTexture (180, 40, "UIMainPanel.submenubar.png");
+				FavCimsNameBgOverride_texture.wrapMode = TextureWrapMode.Clamp;
+				FavCimsNameBgOverride_texture.filterMode = FilterMode.Bilinear;
+				FavCimsNameBgOverride_texture.name = "FavCimsNameOverride_texture";
+				FavCimsNameBgOverride_texture.mipMapBias = -0.5f;
 
 				//Row Icons texture
 
@@ -342,6 +470,21 @@ namespace FavoriteCims
 				FavCimsOtherInfoTexture.wrapMode = TextureWrapMode.Clamp;
 				FavCimsOtherInfoTexture.filterMode = FilterMode.Bilinear;
 				FavCimsOtherInfoTexture.name = "FavCimsOtherInfoTexture";
+
+				VehiclePanelTitleBackground = ResourceLoader.loadTexture (250, 41, "VehiclePanel.VehiclePanelTitleBg.png");
+				VehiclePanelTitleBackground.wrapMode = TextureWrapMode.Clamp;
+				VehiclePanelTitleBackground.filterMode = FilterMode.Bilinear;
+				VehiclePanelTitleBackground.name = "VehiclePanelTitleBackground";
+
+				VehiclePanelBackground = ResourceLoader.loadTexture (250, 1, "VehiclePanel.VehiclePanelBg.png");
+				VehiclePanelBackground.wrapMode = TextureWrapMode.Repeat;
+				VehiclePanelBackground.filterMode = FilterMode.Point;
+				VehiclePanelBackground.name = "VehiclePanelBackground";
+
+				VehiclePanelFooterBackground = ResourceLoader.loadTexture (250, 12, "VehiclePanel.VehiclePanelBottomBg.png");
+				VehiclePanelFooterBackground.wrapMode = TextureWrapMode.Clamp;
+				VehiclePanelFooterBackground.filterMode = FilterMode.Bilinear;
+				VehiclePanelFooterBackground.name = "VehiclePanelFooterBackground";
 
 			}catch(Exception e) {
 				Debug.Error("Can't load row icons : " + e.ToString());

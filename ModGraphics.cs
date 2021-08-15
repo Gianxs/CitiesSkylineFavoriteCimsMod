@@ -8,34 +8,14 @@ using System.Threading;
 
 namespace FavoriteCims
 {
-	public class FavoritesCimsButton : UIPanel
+	/*
+	public class FavoritesCimsButton : UIButton
+	//public class FavoritesCimsButton : UIButton
 	{
 		//Menu Button
-		UIButton FavCimsButton;
+		//UIButton FavCimsButton;
 
-		//Triggers
-		UIComponent FavCimsPanelTrigger_paneltime;
-		UIComponent FavCimsPanelTrigger_chirper;
-		UIComponent FavCimsPanelTrigger_esc;
-		UIComponent FavCimsPanelTrigger_infopanel;
-		UIComponent FavCimsPanelTrigger_bottombars;
 
-		public static void FavCimsPanelToggle() {
-
-			if (!FavCimsMainClass.FavCimsPanel.isVisible) {
-				FavCimsMainClass.FavCimsPanel.CenterTo (FavCimsMainClass.FullScreenContainer);
-				FavCimsMainClass.FavCimsPanel.Show();
-			} else {
-				FavCimsMainClass.FavCimsPanel.Hide();
-			}			
-		}
-
-		public void FavCimsPanelOff () {
-			
-			if (FavCimsMainClass.FavCimsPanel.isVisible && !FavCimsMainClass.FavCimsPanel.containsMouse && !FavCimsButton.containsMouse && (FavCimsPanelTrigger_paneltime != null && !FavCimsPanelTrigger_paneltime.containsMouse)) {
-				FavCimsMainClass.FavCimsPanel.Hide ();
-			}
-		}
 
 		public override void Start() {
 
@@ -45,18 +25,21 @@ namespace FavoriteCims
 			///////////Favorite Button Manu Panel/////////
 			///////////////////////////////////////////////
 
-			this.name = "FavCimsMenuPanel";
-			this.width = 49;
-			this.height = 49;
+			//this.name = "FavCimsMenuPanel";
+			//this.width = 49;
+			//this.height = 49;
 			//FavCimsMenuPanel.AlignTo (MainMenuPos, UIAlignAnchor.TopLeft);
-			this.BringToFront();
-			this.autoLayout = true;
+
+			//this.BringToFront();
+			//this.autoLayout = true;
 			
 			////////////////////////////////////////////////
 			///////////////Favorite Button////////////////
 			///////////////////////////////////////////////
 
-			FavCimsButton = this.AddUIComponent<UIButton>();
+			//FavCimsButton = this.AddUIComponent<UIButton>();
+			//FavCimsButton = this;
+
 			FavCimsButton.normalBgSprite = "FavoriteCimsButton";
 			//TestButton.disabledBgSprite = "";
 			FavCimsButton.hoveredBgSprite = "FavoriteCimsButtonHovered";
@@ -67,38 +50,20 @@ namespace FavoriteCims
 			FavCimsButton.tooltipBox = uiView.defaultTooltipBox;
 			FavCimsButton.atlas = MyAtlas.FavCimsAtlas;
 			FavCimsButton.size = new Vector2(49,49);
-			FavCimsButton.eventClick += (component, eventParam) => FavCimsPanelToggle ();
+
+			//FavCimsButton.eventClick += (component, eventParam) => FavCimsPanelToggle ();
 
 			/////////////////////////////////////////////////////////
 			///Triggers for self close panel when open another window
 			/////////////////////////////////////////////////////////
 			
-			FavCimsPanelTrigger_chirper = UIView.Find<UIPanel> ("ChirperPanel");
-			FavCimsPanelTrigger_esc = UIView.Find<UIButton> ("Esc");
-			FavCimsPanelTrigger_infopanel = UIView.Find<UIPanel> ("InfoPanel");
-			FavCimsPanelTrigger_bottombars = UIView.Find<UISlicedSprite> ("TSBar");
-			FavCimsPanelTrigger_paneltime = UIView.Find<UIPanel> ("PanelTime");
 
-			if (FavCimsPanelTrigger_chirper != null && FavCimsPanelTrigger_paneltime != null) {
-				FavCimsPanelTrigger_chirper.eventClick += (component, eventParam) => FavCimsPanelOff ();
-			}
-			
-			if (FavCimsPanelTrigger_esc != null && FavCimsPanelTrigger_paneltime != null) {
-				FavCimsPanelTrigger_esc.eventClick += (component, eventParam) => FavCimsPanelOff ();
-			}
-			
-			if (FavCimsPanelTrigger_infopanel != null && FavCimsPanelTrigger_paneltime != null) {
-				FavCimsPanelTrigger_infopanel.eventClick += (component, eventParam) => FavCimsPanelOff ();
-			}
-			
-			if (FavCimsPanelTrigger_bottombars != null && FavCimsPanelTrigger_paneltime != null) {
-				FavCimsPanelTrigger_bottombars.eventClick += (component, eventParam) => FavCimsPanelOff ();
-			}
 		}
-
+		/*
 		public override void Update() {
 			if (FavCimsMainClass.UnLoading)
 				return;
+
 
 			FavCimsButton.tooltip = FavCimsLang.text ("FavCimsButton_tooltip");
 
@@ -114,14 +79,24 @@ namespace FavoriteCims
 			} else {
 				FavCimsButton.Unfocus ();
 			}
+
+			
 		}
-	}
+
+	}*/
 
 	public class AddToFavButton : UIButton
 	{
 		InstanceID ThisHuman = InstanceID.Empty;
 		InstanceManager MyInstance = Singleton<InstanceManager>.instance;
 		CitizenManager MyCitizen = Singleton<CitizenManager>.instance;
+		
+		//private HumanWorldInfoPanel SimpleCitizen;
+		//private ServicePersonWorldInfoPanel ServiceCitizen;
+
+		public UIAlignAnchor Alignment;
+		public UIPanel RefPanel;
+		//public UIComponent PanelType;
 
 		public override void Start() {
 
@@ -136,9 +111,9 @@ namespace FavoriteCims
 			this.atlas = MyAtlas.FavCimsAtlas;
 			this.size = new Vector2(32,32);
 			this.playAudioEvents = true;
-			this.AlignTo (FavCimsMainClass.FavCimsHumanPanel, UIAlignAnchor.BottomRight);
+			this.AlignTo (RefPanel, Alignment);
 			this.tooltipBox = uiView.defaultTooltipBox;
-			this.eventClick += (component, eventParam) => FavCimsCore.UpdateMyCitizen("toggle");
+			this.eventClick += (component, eventParam) => FavCimsCore.UpdateMyCitizen("toggle", RefPanel);
 		}
 
 		public override void Update() {
@@ -146,12 +121,24 @@ namespace FavoriteCims
 				return;
 
 			if (this.isVisible) { 
-				
+
 				if(!HumanWorldInfoPanel.GetCurrentInstanceID().IsEmpty) {
-					
+
+					//Instance are deleted too fast
+					//if(HumanWorldInfoPanel.GetCurrentInstanceID().Citizen == 0 && HumanWorldInfoPanel.GetCurrentInstanceID().CitizenInstance != 0) {
+						//ThisHuman.Citizen = (uint)Array.FindIndex (MyCitizen.m_citizens.m_buffer, element => element.m_instance == HumanWorldInfoPanel.GetCurrentInstanceID().CitizenInstance);
+						//Debug.Log("Case 1");
+					//}else{
 					ThisHuman = HumanWorldInfoPanel.GetCurrentInstanceID();
+						//Debug.Log("Case 2");
+					//}
+					//(uint)Array.FindIndex (MyCitizen.m_citizens.m_buffer, element => element.m_instance == HumanWorldInfoPanel.GetCurrentInstanceID().CitizenInstance);
+					//Debug.Log(ThisHuman.ToString());
+
 					int citizenID = (int)((UIntPtr)ThisHuman.Citizen);
 					string CitizenName = MyInstance.GetName (ThisHuman);
+
+					//Debug.Log(CitizenName);
 					
 					if(CitizenName != null && CitizenName.Length > 0) {
 						
@@ -414,7 +401,7 @@ namespace FavoriteCims
 			FavCimsMenuCloseButton.useOutline = true;
 			FavCimsMenuCloseButton.playAudioEvents = true;
 			
-			FavCimsMenuCloseButton.eventClick += (component, eventParam) => FavoritesCimsButton.FavCimsPanelToggle ();
+			FavCimsMenuCloseButton.eventClick += (component, eventParam) => FavCimsMainClass.FavCimsPanelToggle ();
 			
 			//Printing
 			FavCimsMenuCloseButton.relativePosition = new Vector3 (this.width - (FavCimsMenuCloseButton.width * 1.5f), ((float)FavCimsTitleTexture.height / 2) - FavCimsMenuCloseButton.height / 2);
@@ -871,6 +858,12 @@ namespace FavoriteCims
 					FavCimsCitizenSingleRowPanel.MyInstanceID = FavCitizen.Key;
 					FavCimsCitizenSingleRowPanel.MyInstancedName = FavCitizen.Value;
 				}
+				/* qui posso caricare anche i distretti, gli edifici ecc....
+				else 
+				{
+					Debug.Log("#ID# : " + FavCitizen.Key + " #Name# : " + FavCitizen.Value + " #Type# : " + FavCitizen.Key.Type.ToString());
+				}
+				*/
 			}
 		}
 	}

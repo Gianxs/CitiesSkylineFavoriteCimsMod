@@ -1,4 +1,4 @@
-using ColossalFramework;
+﻿using ColossalFramework;
 using ColossalFramework.UI;
 //using ColossalFramework.IO;
 //using ColossalFramework.Globalization;
@@ -14,6 +14,7 @@ namespace FavoriteCims
 {
 	public class FavCimsCore : MonoBehaviour
 	{
+		public static InstanceID ThisHuman;
 		public static Dictionary<int, int> RowID = new Dictionary<int, int> ();
 
 		/* Thx to mabako for this piece of code */
@@ -115,7 +116,9 @@ namespace FavoriteCims
 			}
 		}
 		
-		public static void UpdateMyCitizen(string action) {
+		public static void UpdateMyCitizen(string action, UIPanel refPanel) {
+
+			CitizenManager MyCitizen = Singleton<CitizenManager>.instance;
 
 			object L = FavCimsCore.GetPrivateVariable<object>(InstanceManager.instance, "m_lock");
 			do { }
@@ -124,8 +127,15 @@ namespace FavoriteCims
 			try
 			{	
 				InstanceManager MyInstance = Singleton<InstanceManager>.instance;
-				FavCimsMainClass.FavCimsHumanPanel.SimulateClick();
-				InstanceID ThisHuman = HumanWorldInfoPanel.GetCurrentInstanceID();
+				refPanel.SimulateClick();
+
+				//if(HumanWorldInfoPanel.GetCurrentInstanceID().Citizen == 0 && HumanWorldInfoPanel.GetCurrentInstanceID().CitizenInstance != 0) {
+					//ThisHuman.Citizen = (uint)Array.FindIndex (MyCitizen.m_citizens.m_buffer, element => element.m_instance == HumanWorldInfoPanel.GetCurrentInstanceID().CitizenInstance);
+					//Debug.Log("Case instance");
+				//}else{
+				ThisHuman = HumanWorldInfoPanel.GetCurrentInstanceID();
+					//Debug.Log("Case citizen");
+				//}
 				
 				string CitizenName = MyInstance.GetName (ThisHuman);
 				int citizenID = (int)((UIntPtr)ThisHuman.Citizen);
@@ -140,7 +150,7 @@ namespace FavoriteCims
 					}
 				} else {
 					try { //add favorite by clicking the Star Button.			
-						UITextField DefaultName = FavCimsMainClass.FavCimsHumanPanel.GetComponentInChildren<UITextField>();
+						UITextField DefaultName = refPanel.GetComponentInChildren<UITextField>();
 						MyInstance.SetName(ThisHuman,DefaultName.text);
 					} catch (Exception e) {
 						Debug.Error("Toggle Add Fail : " + e.ToString());
@@ -163,6 +173,41 @@ namespace FavoriteCims
 
 		public static void ClearIdArray() {
 			RowID.Clear ();
+		}
+
+		public static void GoToCitizen(Vector3 position, InstanceID Target, bool tourist, UIMouseEventParameter eventParam)
+		{
+			if (Target.IsEmpty)
+				return;
+
+			InstanceManager MyInstance = Singleton<InstanceManager>.instance;
+
+			try {
+				if (MyInstance.SelectInstance (Target)) {
+
+					if(UIView.Find<UILabel>("DefaultTooltip"))
+						UIView.Find<UILabel>("DefaultTooltip").Hide();
+
+					if (eventParam.buttons == UIMouseButton.Middle) {
+						if(tourist) {
+							WorldInfoPanel.Show<TouristWorldInfoPanel> (position, Target);
+						} else {
+							WorldInfoPanel.Show<CitizenWorldInfoPanel> (position, Target);
+						}
+					}else if (eventParam.buttons == UIMouseButton.Left) {
+						ToolsModifierControl.cameraController.SetTarget (Target, ToolsModifierControl.cameraController.transform.position, true);
+					}else {
+						ToolsModifierControl.cameraController.SetTarget (Target, ToolsModifierControl.cameraController.transform.position, true);
+						if(tourist) {
+							WorldInfoPanel.Show<TouristWorldInfoPanel> (position, Target);
+						} else {
+							WorldInfoPanel.Show<CitizenWorldInfoPanel> (position, Target);
+						}
+					}
+				}
+			} catch(Exception e) {
+				Debug.Error("Can't find the Citizen " + e.ToString());
+			}
 		}
 
 		//Calculate Real Citizen Age
@@ -229,15 +274,17 @@ namespace FavoriteCims
 
 				return Real_Age;
 
-			} else { 
+			} else {
 
-				GameAge_percent = (((double)GameAge - Citizen.AGE_LIMIT_SENIOR) / (Citizen.AGE_LIMIT_FINAL - Citizen.AGE_LIMIT_SENIOR)) * 100;
+                int MaxLifeSpan = 400; //OLD VALUE pre Sunset Harbor : Citizen.AGE_LIMIT_FINAL = 255;
+
+                GameAge_percent = (((double)GameAge - Citizen.AGE_LIMIT_SENIOR) / (MaxLifeSpan - Citizen.AGE_LIMIT_SENIOR)) * 100;
 				RealMinAge = 91;
-				RealMaxAge = 105;
+				RealMaxAge = 114;
 				AgeStep = (((double)RealMaxAge - RealMinAge) / 100) * GameAge_percent;
 				
 				Real_Age = (RealMinAge + (int)AgeStep);
-			
+
 				return Real_Age;
 			}
 		}
